@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>Линк-хаб | Ученик 8 класса</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Дизайн 2026: неоморфизм + микро-интеракции, система комфортного скролла */
+        body {
+            background: #f0f2f8;
+            font-family: system-ui, -apple-system, 'Segoe UI', 'SF Pro Text', 'Inter', 'Roboto', sans-serif;
+            padding: 20px 16px 56px 16px;
+            color: #121826;
+        }
+
+        /* основной контейнер — мобильный флоу */
+        .hub-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* шапка с приветствием */
+        .hero {
+            margin-bottom: 28px;
+            text-align: left;
+        }
+        .hero h1 {
+            font-size: 2rem;
+            font-weight: 620;
+            background: linear-gradient(135deg, #1E2A5E, #2D3A6E);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+        }
+        .hero p {
+            font-size: 0.95rem;
+            color: #4a5568;
+            margin-top: 6px;
+            font-weight: 450;
+        }
+        .badge-year {
+            display: inline-block;
+            background: rgba(45, 58, 110, 0.1);
+            backdrop-filter: blur(2px);
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #1E2A5E;
+            margin-top: 12px;
+        }
+
+        /* аккордеон / карточки предметов */
+        .subject-group {
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(2px);
+            border-radius: 32px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.02), 0 2px 4px rgba(0,0,0,0.02);
+            transition: all 0.2s ease;
+        }
+        .subject-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 20px;
+            background: rgba(255,255,255,0.85);
+            border-radius: 32px;
+            cursor: pointer;
+            transition: background 0.2s, border-radius 0.2s;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.7);
+        }
+        .subject-header:active {
+            background: rgba(245,247,252,0.95);
+            transform: scale(0.99);
+        }
+        .subject-title {
+            font-weight: 620;
+            font-size: 1.35rem;
+            letter-spacing: -0.3px;
+            background: linear-gradient(145deg, #1f2a46, #2b3a5c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .subject-emoji {
+            font-size: 1.6rem;
+            margin-right: 12px;
+        }
+        .toggle-icon {
+            font-size: 1.6rem;
+            color: #6c7a91;
+            transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            line-height: 1;
+        }
+        .subject-group.open .toggle-icon {
+            transform: rotate(180deg);
+        }
+        .links-panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.45s cubic-bezier(0.33, 1, 0.68, 1);
+            padding: 0 16px;
+        }
+        .subject-group.open .links-panel {
+            max-height: 2000px; /* достаточно для длинных списков */
+            padding: 8px 16px 20px 16px;
+        }
+        /* сетка ссылок — мобильная, карточки-линки */
+        .link-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+        }
+        .link-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffffdd;
+            backdrop-filter: blur(8px);
+            border-radius: 22px;
+            padding: 12px 16px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: 0.5px solid rgba(255,255,255,0.7);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .link-card:active {
+            background: white;
+            transform: scale(0.97);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+        .link-text {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #1a2639;
+            word-break: break-word;
+            flex: 1;
+            padding-right: 12px;
+            line-height: 1.35;
+        }
+        .link-arrow {
+            font-size: 1.3rem;
+            color: #8096b3;
+            opacity: 0.8;
+            transition: transform 0.1s;
+        }
+        .link-card:hover .link-arrow {
+            transform: translateX(4px);
+        }
+
+        /* подписи для длинных названий (не меняем сам текст) */
+        .note-external {
+            font-size: 0.7rem;
+            color: #5c6b7e;
+            margin-top: 4px;
+            display: block;
+        }
+        hr {
+            margin: 4px 0;
+            border: 0.5px solid rgba(0,0,0,0.05);
+        }
+        .footer-meta {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #7f8c9a;
+            margin-top: 32px;
+            padding: 16px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+        /* Спец. стили для группировки "Дополнительно" */
+        .special-badge {
+            background: #eef2ff;
+            border-radius: 28px;
+        }
+        /* "базовые порталы" в отдельном секторе */
+        .basics-block {
+            background: linear-gradient(120deg, #ffffffd9, #f9fafcd9);
+            border-radius: 32px;
+            padding: 8px 4px 12px 4px;
+            margin-bottom: 24px;
+            backdrop-filter: blur(4px);
+            border: 0.5px solid #fff;
+        }
+        .section-title-small {
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 10px 16px 4px 16px;
+            color: #2c3e66;
+            letter-spacing: -0.2px;
+        }
+        /* адаптив для очень маленьких */
+        @media (max-width: 480px) {
+            body {
+                padding: 16px 12px 40px 12px;
+            }
+            .subject-title {
+                font-size: 1.2rem;
+            }
+            .link-text {
+                font-size: 0.88rem;
+            }
+        }
+        /* плавный скролл */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+<div class="hub-container">
+    <div class="hero">
+        <h1>🧠 линк-хаб<br>8 класс</h1>
+        <p>все ресурсы • учёба • подготовка • удобно с телефона</p>
+        <span class="badge-year">✨ дизайн 2026 • тактильный неоморфизм</span>
+    </div>
+
+    <!-- ========= БАЗОВЫЕ ПОРТАЛЫ (отдельный блок, как просили) ========= -->
+    <div class="basics-block">
+        <div class="section-title-small">📌 Базовые порталы / платформы</div>
+        <div class="link-grid" style="gap: 10px; margin-top: 6px;">
+            <!-- Все ссылки из раздела Базовое онлайн-обучение и др. с сохранением оригинальных названий -->
+            <a href="https://resh.edu.ru/" target="_blank" rel="noopener noreferrer" class="link-card"><span class="link-text">Российская электронная школа (resh.edu.ru)</span><span class="link-arrow">↗</span></a>
+            <a href="https://uchi.ru/" target="_blank" rel="noopener noreferrer" class="link-card"><span class="link-text">Учи.ру</span><span class="link-arrow">↗</span></a>
+            <a href="https://www.yaklass.ru" target="_blank" rel="noopener noreferrer" class="link-card"><span class="link-text">ЯКласс — онлайн-тренажёр по 15 предметам, задания для ЕГЭ, ОГЭ, ВПР с автопроверкой и теорией</span><span class="link-arrow">↗</span></a>
+            <a href="https://interneturok.ru" target="_blank" rel="noopener noreferrer" class="link-card"><span class="link-text">ИнтернетУрок — библиотека видеоуроков, конспектов и тестов</span><span class="link-arrow">↗</span></a>
+            <a href="https://foxford.ru" target="_blank" rel="noopener noreferrer" class="link-card"><span class="link-text">Фоксфорд — подготовка к ЕГЭ, ОГЭ, олимпиадам от преподавателей МГУ, МФТИ, ВШЭ (много бесплатного)</span><span class="link-arrow">↗</span></a>
+            <a href="https://fipi.ru/navigator-podgotovki/navigator-oge" target="_blank" rel="noopener noreferrer" class="link-card"><span class="link-text">Навигатор самостоятельной подготовки к ОГЭ — пошаговые рекомендации от разработчиков экзамена</span><span class="link-arrow">↗</span></a>
+            <a href="https://sdamgia.ru" target="_blank" rel="noopener noreferrer" class="link-card"><span class="link-text">РЕШУ ЕГЭ/ОГЭ/ВПР (СдамГИА) — тренажёр с огромным банком заданий</span><span class="link-arrow">↗</span></a>
+            <a href="https://infourok.ru/" target="_blank" rel="noopener noreferrer" class="link-card"><span class="link-text">Инфоурок — огромное количество материалов, включая КИМ</span><span class="link-arrow">↗</span></a>
+            <a href="https://learningapps.org" target="_blank" rel="noopener noreferrer" class="link-card"><span class="link-text">LearningApps — упражнения</span><span class="link-arrow">↗</span></a>
+            <a href="https://www.youtube.com/@OnliSkill" target="_blank" rel="noopener noreferrer" class="link-card"><span class="link-text">OnliSkill - видеоуроки с 5 по 11 класс</span><span class="link-arrow">↗</span></a>
+            <a href="https://www.gosuslugi.ru/myschool" target="_blank" rel="noopener noreferrer" class="link-card"><span class="link-text">Сервис Моя школа (Госуслуги)</span><span class="link-arrow">↗</span></a>
+            <a href="https://docs.google.com/spreadsheets/d/1EPnOrHBXIeoXKJNt97zsKEBJVAbvjwEqKFjzpLvc3Mo/edit?pli=1&gid=1569719132#gid=1569719132" target="_blank" rel="noopener noreferrer" class="link-card"><span class="link-text">КАТАЛОГ платформ и школ для ПА</span><span class="link-arrow">↗</span></a>
+            <!-- доп. семейное обучение и тг -->
+            <a href="https://t.me/family_education11" target="_blank" rel="noopener noreferrer" class="link-card"><span class="link-text">ГРУППА ПО СЕМЕЙНОМУ ОБУЧЕНИЮ (Telegram)</span><span class="link-arrow">↗</span></a>
+            <a href="https://t.me/homescooling1" target="_blank" rel="noopener noreferrer" class="link-card"><span class="link-text">ГРУППА ПО СЕМЕЙНОМУ ОБУЧЕНИЮ 2 (Telegram)</span><span class="link-arrow">↗</span></a>
+        </div>
+    </div>
+
+    <!-- ========= ДИНАМИЧЕСКИЙ СПИСОК ПРЕДМЕТОВ (аккордеон) ========= -->
+    <!-- JS для аккордеона внизу, но структура: Русский язык и литература -->
+    <div class="subject-group" id="group-rus">
+        <div class="subject-header"><div style="display: flex; align-items: center;"><span class="subject-emoji">📖</span><span class="subject-title">Русский язык и литература</span></div><span class="toggle-icon">⌵</span></div>
+        <div class="links-panel"><div class="link-grid">
+            <a href="https://youtu.be/YStxafJlWS0?si=H1Qm1A0X053K2pNc" target="_blank" class="link-card"><span class="link-text">Русский язык (видео)</span><span class="link-arrow">▶</span></a>
+            <a href="https://youtube.com/playlist?list=PLo8q60XhDXRSdVsJ-MppXdxVyKZCX1lm1&si=YNzUWbR8dQuAjReD" target="_blank" class="link-card"><span class="link-text">Русский язык плейлист</span><span class="link-arrow">▶</span></a>
+            <a href="https://youtube.com/playlist?list=PLrpAqXzEvTyyzTh9bQQ3hdAZZnfW2YfVL&si=I0y_lzjbaxj9EZfm" target="_blank" class="link-card"><span class="link-text">Литература плейлист</span><span class="link-arrow">▶</span></a>
+            <a href="https://youtu.be/P1OD_teLcdY" target="_blank" class="link-card"><span class="link-text">Дополнительно: Спидран русской литературы</span><span class="link-arrow">▶</span></a>
+            <a href="https://youtube.com/playlist?list=PLJQdy_SVymBP9L_48RZw6grzPAA7Ah3YA&si=6wtyDnoMi2JZIS5D" target="_blank" class="link-card"><span class="link-text">Дополнительно: открытый урок с Быковым по литературе</span><span class="link-arrow">▶</span></a>
+            <a href="https://vk.com/music/playlist/-79876841_73511191_0c3f635c66a5881f22" target="_blank" class="link-card"><span class="link-text">Дополнительно: западная литература 20 века (VK)</span><span class="link-arrow">↗</span></a>
+            <a href="https://vk.com/music/playlist/-52526415_85403198_2ad2ca8193647845b1" target="_blank" class="link-card"><span class="link-text">Дополнительно: Набоков - лекции по русской литературе</span><span class="link-arrow">↗</span></a>
+        </div></div>
+    </div>
+
+    <!-- Математика и информатика -->
+    <div class="subject-group" id="group-math">
+        <div class="subject-header"><div style="display: flex;"><span class="subject-emoji">📐</span><span class="subject-title">Математика и информатика</span></div><span class="toggle-icon">⌵</span></div>
+        <div class="links-panel"><div class="link-grid">
+            <a href="https://ru.pinterest.com/pin/496944140146110856/" target="_blank" class="link-card"><span class="link-text">карта математики (Pinterest)</span><span class="link-arrow">↗</span></a>
+            <a href="https://youtu.be/X2Z2eJNEEos" target="_blank" class="link-card"><span class="link-text">Как познать всю математику САМОМУ? (за 20 минут)</span><span class="link-arrow">▶</span></a>
+            <a href="https://youtu.be/nn8Duo_bQY4" target="_blank" class="link-card"><span class="link-text">ВСЯ АЛГЕБРА 7 КЛАССА ЗА 10 МИНУТ| Математика с нуля №1</span><span class="link-arrow">▶</span></a>
+            <a href="https://www.youtube.com/@MathEasy" target="_blank" class="link-card"><span class="link-text">Комплексный канал о математике (MathEasy)</span><span class="link-arrow">▶</span></a>
+            <a href="https://no.11klasov.net/4263-algebra-8-klass-uchebnik-v-3-chastyah-peterson-lg-i-dr.html" target="_blank" class="link-card"><span class="link-text">Рекомендованный учебник математики (8 класс, Петерсон)</span><span class="link-arrow">↗</span></a>
+            <a href="https://youtu.be/bOd_ecJon9s" target="_blank" class="link-card"><span class="link-text">Вся Математика за 12 часов, с Нуля до Профиля ЕГЭ</span><span class="link-arrow">▶</span></a>
+            <a href="https://youtube.com/playlist?list=PLnp1b0c7z98qMo0CEm36RVN8x3BuodrqJ&si=8WQO5QkL167k7yej" target="_blank" class="link-card"><span class="link-text">Плейлист со школьной алгеброй</span><span class="link-arrow">▶</span></a>
+            <a href="https://youtube.com/playlist?list=PLxv1GWnBLw5EftKHNoN2qjWH5MEVL79NI&si=UAPOrAB6r23gWOee" target="_blank" class="link-card"><span class="link-text">Математика с 0 (Путь к ОГЭ)</span><span class="link-arrow">▶</span></a>
+            <a href="https://www.youtube.com/playlist?list=PLSvRPXojWOmSDZk16TrWogtNi5n6iqi72" target="_blank" class="link-card"><span class="link-text">Введение в математику (плейлист)</span><span class="link-arrow">▶</span></a>
+            <a href="https://abitu.net/ege/3838137" target="_blank" class="link-card"><span class="link-text">Подготовка к ЕГЭ 2021 по физике и математике от МФТИ</span><span class="link-arrow">↗</span></a>
+            <hr><span class="note-external" style="margin-top: 4px;">⚡ Алгебра</span>
+            <a href="https://youtu.be/CPYRPvTBuTA?si=X4CVIP8KYhcj2lfL" target="_blank" class="link-card"><span class="link-text">Алгебра урок</span><span class="link-arrow">▶</span></a>
+            <a href="https://youtu.be/A_y9cDeZM2Y?si=6RAbwFzotUJ1Tff7" target="_blank" class="link-card"><span class="link-text">Алгебра 8 класс</span><span class="link-arrow">▶</span></a>
+            <a href="https://youtu.be/0vMnKTlmcls?si=KMOqHq6HG-gUN_IS" target="_blank" class="link-card"><span class="link-text">Алгебра видео</span><span class="link-arrow">▶</span></a>
+            <a href="https://www.youtube.com/playlist?list=PLCRqj4jDCIYkk9CMV6wBQR16eHz_SRU1j" target="_blank" class="link-card"><span class="link-text">Алгебра плейлист</span><span class="link-arrow">▶</span></a>
+            <span class="note-external">📐 Геометрия</span>
+            <a href="https://youtu.be/jXiUyBI8yOs?si=pnIdf7VWmAaUSU7X" target="_blank" class="link-card"><span class="link-text">Геометрия 8 класс</span><span class="link-arrow">▶</span></a>
+            <a href="https://youtu.be/WKZwvaeEds0?si=CvFgmz_gIQcNBKqv" target="_blank" class="link-card"><span class="link-text">Геометрия важная тема</span><span class="link-arrow">▶</span></a>
+            <a href="https://youtube.com/playlist?list=PLeRoaPcjXF1ecF21g27Q7ZDfF8Gktvwf0&si=HdGOGqiXcSb2b_US" target="_blank" class="link-card"><span class="link-text">Геометрия 8 класс плейлист</span><span class="link-arrow">▶</span></a>
+            <span class="note-external">📊 Вероятность и статистика</span>
+            <a href="https://www.youtube.com/playlist?list=PLM5ldtp1CGmphTC2DOC4AX9v3a6GlLZHt" target="_blank" class="link-card"><span class="link-text">Вероятность и статистика плейлист</span><span class="link-arrow">▶</span></a>
+            <a href="https://youtu.be/wa9DPJJ80rY" target="_blank" class="link-card"><span class="link-text">Вероятность и статистика видео</span><span class="link-arrow">▶</span></a>
+            <span class="note-external">💻 Информатика</span>
+            <a href="https://youtu.be/94Ai8jNVRiY?si=JfV_rSkp3ZeewNlr" target="_blank" class="link-card"><span class="link-text">Информатика 8 класс (видео)</span><span class="link-arrow">▶</span></a>
+            <a href="https://www.youtube.com/playlist?list=PLvtJKssE5NrgdMB5Utz58w8FtIxOW5X7R" target="_blank" class="link-card"><span class="link-text">Информатика плейлист</span><span class="link-arrow">▶</span></a>
+        </div></div>
+    </div>
+
+    <!-- Естественно-научные предметы -->
+    <div class="subject-group"><div class="subject-header"><div><span class="subject-emoji">🔬</span><span class="subject-title">Естественно-научные предметы</span></div><span class="toggle-icon">⌵</span></div>
+    <div class="links-panel"><div class="link-grid">
+        <span class="note-external">🧲 Физика</span>
+        <a href="https://youtu.be/6Y3gikcjuV0?si=LDG1jvUdddlsIpTr" class="link-card"><span class="link-text">Физика 8 класс</span><span class="link-arrow">▶</span></a>
+        <a href="https://youtu.be/u_L9m-J9Ue8?si=YFH3ORxZUjeuEJ3b" class="link-card"><span class="link-text">Физика 8 класс видео</span><span class="link-arrow">▶</span></a>
+        <a href="https://www.youtube.com/playlist?list=PLvtJKssE5NrgKwiO2c5L7LeavpLaNpaau" class="link-card"><span class="link-text">Физика 8 плейлист</span><span class="link-arrow">▶</span></a>
+        <span class="note-external">🧪 Химия 8 класс</span>
+        <a href="https://youtu.be/dzlyC3PLD74?si=jTHKyeS4BD1RDOok" class="link-card"><span class="link-text">Химия 8 класс (видео)</span><span class="link-arrow">▶</span></a>
+        <a href="https://www.youtube.com/playlist?list=PLrpAqXzEvTyxSgGS5qjm-hjuUAmUEQ1Er" class="link-card"><span class="link-text">Химия 8 класс плейлист</span><span class="link-arrow">▶</span></a>
+        <a href="https://youtube.com/playlist?list=PL92ykBQNNakGSVVG9ign5cT3xHo7gkvt2&si=zse3y2kn5g6f7CaE" class="link-card"><span class="link-text">Химия сборник плейлист</span><span class="link-arrow">▶</span></a>
+        <span class="note-external">🧬 Биология 8 класс</span>
+        <a href="https://youtu.be/CAxg65ezEkY?si=Jt-7V5wt5XWl3nPc" class="link-card"><span class="link-text">Биология 8 класс</span><span class="link-arrow">▶</span></a>
+        <a href="https://www.youtube.com/playlist?list=PLrpAqXzEvTyzWdZEoZrOvm0cZEcOUt8Td" class="link-card"><span class="link-text">Биология 8 класс плейлист</span><span class="link-arrow">▶</span></a>
+    </div></div></div>
+
+    <!-- Общественно-научные -->
+    <div class="subject-group"><div class="subject-header"><div><span class="subject-emoji">🌍</span><span class="subject-title">Общественно-научные предметы</span></div><span class="toggle-icon">⌵</span></div>
+    <div class="links-panel"><div class="link-grid">
+        <a href="https://youtu.be/9rGYazUenBM?si=knWK1h5F76spz_4C" class="link-card"><span class="link-text">Всеобщая история 8 класс</span><span class="link-arrow">▶</span></a>
+        <a href="https://youtu.be/8GdHA5UFJhs?si=VGmpKiPtzuk6TW_w" class="link-card"><span class="link-text">История 8 класс видео</span><span class="link-arrow">▶</span></a>
+        <a href="https://www.youtube.com/playlist?list=PLDPC6dfN5lN8jxYS4ohSOoqx7ciJl-Fum" class="link-card"><span class="link-text">Всеобщая история плейлист</span><span class="link-arrow">▶</span></a>
+        <a href="https://www.youtube.com/playlist?list=PLDPC6dfN5lN_lWcUzQLrxUHktmat8193l" class="link-card"><span class="link-text">История России плейлист</span><span class="link-arrow">▶</span></a>
+        <a href="https://youtu.be/rF7vh97_wsc?si=L4uI3JFnXTSQkNBH" class="link-card"><span class="link-text">Обществознание 8 класс</span><span class="link-arrow">▶</span></a>
+        <a href="https://www.youtube.com/playlist?list=PLrpAqXzEvTyybk8EgAzUS6r2Wg2My5cxm" class="link-card"><span class="link-text">География 8 класс плейлист</span><span class="link-arrow">▶</span></a>
+    </div></div></div>
+
+    <!-- Искусство и технология + ОБЖ, физра -->
+    <div class="subject-group"><div class="subject-header"><div><span class="subject-emoji">🎨</span><span class="subject-title">Искусство и технология</span></div><span class="toggle-icon">⌵</span></div>
+    <div class="links-panel"><div class="link-grid">
+        <a href="https://www.youtube.com/playlist?list=PLAUhrtAMVO-876bVscJKEMK9JJz8KUKTk" class="link-card"><span class="link-text">Труд (технология) 8 класс плейлист</span><span class="link-arrow">▶</span></a>
+        <a href="https://www.youtube.com/playlist?list=PLkssEhhF6L6O-NZukPmtoM7pFALcbMYEC" class="link-card"><span class="link-text">ИЗО 8 класс плейлист</span><span class="link-arrow">▶</span></a>
+        <a href="https://www.youtube.com/playlist?list=PLU2vWLyBJMM3_BQDGUAAo97sCb_6mIATd" class="link-card"><span class="link-text">Музыка 8 класс плейлист</span><span class="link-arrow">▶</span></a>
+        <a href="https://www.youtube.com/playlist?list=PLAUhrtAMVO--XUxSneHcuRaG9lUJ362hK" class="link-card"><span class="link-text">ОБЖ 8 класс плейлист</span><span class="link-arrow">▶</span></a>
+        <a href="https://www.youtube.com/playlist?list=PLAUhrtAMVO--mgTlCslxNxEVTb2s7AzGP" class="link-card"><span class="link-text">Физическая культура 8 класс плейлист</span><span class="link-arrow">▶</span></a>
+    </div></div></div>
+
+    <!-- Дополнительно: все ссылки из "Дополнительно" + английский, кино и пр. -->
+    <div class="subject-group"><div class="subject-header"><div><span class="subject-emoji">✨</span><span class="subject-title">Дополнительно / English / Кино / Лекции</span></div><span class="toggle-icon">⌵</span></div>
+    <div class="links-panel"><div class="link-grid">
+        <a href="https://youtu.be/DetUFYaC9cQ" class="link-card"><span class="link-text">Как я ВЫУЧИЛ БЫ английский, ЕСЛИ БЫ ЗАБЫЛ его: пошаговый план с нуля | Virginia Beowulf</span><span class="link-arrow">▶</span></a>
+        <a href="https://youtu.be/s9Ik82fYb3Y" class="link-card"><span class="link-text">Полный БЕСПЛАТНЫЙ КУРС АНГЛИЙСКОГО ЯЗЫКА (8 часов)</span><span class="link-arrow">▶</span></a>
+        <a href="https://www.youtube.com/playlist?list=PLho0jPYl5RAG1gH4_E26q5g6sRGl2Y3Kp" class="link-card"><span class="link-text">Плейлист с базой английского языка</span><span class="link-arrow">▶</span></a>
+        <a href="https://vk.com/wall-36147615_830607" class="link-card"><span class="link-text">Лучшие методы изучения английского</span><span class="link-arrow">↗</span></a>
+        <a href="https://www.youtube.com/playlist?list=PL3H5xrrh2YApMTO2wFBEiyzKqM5IB0p5F" class="link-card"><span class="link-text">Дополнительно: классика кино от Долина</span><span class="link-arrow">▶</span></a>
+        <a href="https://www.youtube.com/playlist?list=PLwuA0QpVldpaB6CTDfOteQd9bW3teR--H" class="link-card"><span class="link-text">Дополнительно: мастерство публичной речи</span><span class="link-arrow">▶</span></a>
+        <a href="https://vk.com/wall-140536517_33986" class="link-card"><span class="link-text">Дополнительно: кинематограф современности</span><span class="link-arrow">↗</span></a>
+        <a href="https://www.migrun.tech/ru/portugal/secondary-school" class="link-card"><span class="link-text">Дополнительно: ВНЖ по учебе в Португалии</span><span class="link-arrow">↗</span></a>
+        <a href="https://euni.ru/informatsiya/statji/rabota-i-karjera/fsj" class="link-card"><span class="link-text">Дополнительно: Добровольный социальный год в Германии</span><span class="link-arrow">↗</span></a>
+    </div></div></div>
+
+    <div class="footer-meta">
+        🧩 линк-хаб собран для 8 класса • все ссылки сохранены без изменений • мобильный флоу 2026
+    </div>
+</div>
+
+<script>
+    // аккордеон — плавное открывание/закрывание, чтобы UI был удобным на мобильных
+    document.querySelectorAll('.subject-group').forEach(group => {
+        const header = group.querySelector('.subject-header');
+        const toggleIcon = group.querySelector('.toggle-icon');
+        const isInitiallyOpen = true; // по задумке можно открыть все, но для чистоты закрыты? сделаем первые два открытыми? но лучше все открыть для обзора
+        // по умолчанию откроем все группы (потому что удобнее просматривать), но с аккордеоном на тач
+        group.classList.add('open');
+        header.addEventListener('click', (e) => {
+            e.stopPropagation();
+            group.classList.toggle('open');
+        });
+    });
+</script>
+</body>
+</html>
