@@ -361,10 +361,10 @@
           {category:"Физика", name:"РЭШ:  Физика", link:"https://resh.edu.ru/subject/28/8/", supercategory:"Естественно-научные предметы"},
           {category:"Физкультура", name:"РЭШ:  Физкультура", link:"https://resh.edu.ru/subject/9/8/", supercategory:"Искусство и технология"},
           {category:"Химия", name:"РЭШ:  Химия", link:"https://resh.edu.ru/subject/29/8/", supercategory:"Естественно-научные предметы"},
-          {category:"Дополнительные ресурсы", name:"Группа по семейному обучению (Telegram)", link:"https://t.me/family_education11", supercategory:"Ресурсы"},
-          {category:"Дополнительные ресурсы", name:"Вторая Группа по семейному обучению (Telegram)", link:"https://t.me/homescooling1", supercategory:"Ресурсы"},
-          {category:"Дополнительные ресурсы", name:"Программа для тренировки запоминания", link:"https://apps.ankiweb.net/", supercategory:"Ресурсы"},
-          {category:"Дополнительные ресурсы", name:"Каталог платформ и школ для промежуточной аттестации", link:"https://docs.google.com/spreadsheets/d/1EPnOrHBXIeoXKJNt97zsKEBJVAbvjwEqKFjzpLvc3Mo/edit?pli=1&gid=1569719132#gid=1569719132", supercategory:"Ресурсы"},
+          {category:"Ещё ресурсы", name:"Группа по семейному обучению (Telegram)", link:"https://t.me/family_education11", supercategory:"Ресурсы"},
+          {category:"Ещё ресурсы", name:"Вторая Группа по семейному обучению (Telegram)", link:"https://t.me/homescooling1", supercategory:"Ресурсы"},
+          {category:"Ещё ресурсы", name:"Программа для тренировки запоминания", link:"https://apps.ankiweb.net/", supercategory:"Ресурсы"},
+          {category:"Ещё ресурсы", name:"Каталог платформ и школ для промежуточной аттестации", link:"https://docs.google.com/spreadsheets/d/1EPnOrHBXIeoXKJNt97zsKEBJVAbvjwEqKFjzpLvc3Mo/edit?pli=1&gid=1569719132#gid=1569719132", supercategory:"Ресурсы"},
           {category:"Основные ресурсы", name:"Сервис Моя школа (Госуслуги)", link:"https://www.gosuslugi.ru/myschool", supercategory:"Ресурсы"},
           {category:"Основные ресурсы", name:"Учи Ру", link:"https://uchi.ru/", supercategory:"Ресурсы"},
           {category:"Основные ресурсы", name:"ЯКласс — онлайн-тренажёр по 15 предметам, задания для ЕГЭ, ОГЭ, ВПР с автопроверкой и теорией", link:"https://www.yaklass.ru", supercategory:"Ресурсы"},
@@ -373,11 +373,11 @@
           // НОВЫЕ РЕСУРСЫ (Pomodoro + Tweek)
           {category:"Основные ресурсы", name:"🍅 Pomodoro Трекер", link:"https://pomodoro-tracker.com/?lang=ru", supercategory:"Ресурсы"},
           {category:"Основные ресурсы", name:"✅ Tweek — планировщик задач", link:"https://tweek.so/ru", supercategory:"Ресурсы"},
-          {category:"Дополнительные ресурсы", name:"Навигатор самостоятельной подготовки к ОГЭ — пошаговые рекомендации по каждому предмету от разработчиков экзамена", link:"https://fipi.ru/navigator-podgotovki/navigator-oge", supercategory:"Ресурсы"},
+          {category:"Ещё ресурсы", name:"Навигатор самостоятельной подготовки к ОГЭ — пошаговые рекомендации по каждому предмету от разработчиков экзамена", link:"https://fipi.ru/navigator-podgotovki/navigator-oge", supercategory:"Ресурсы"},
           {category:"Основные ресурсы", name:"РЕШУ ЕГЭ/ОГЭ/ВПР (СдамГИА) — тренажёр с огромным банком заданий", link:"https://sdamgia.ru", supercategory:"Ресурсы"},
           {category:"Основные ресурсы", name:"Инфоурок - огромное количество материалов, включая КИМ", link:"https://infourok.ru/", supercategory:"Ресурсы"},
-          {category:"Дополнительные ресурсы", name:"LearningApps упражнения и домашние задания", link:"https://learningapps.org", supercategory:"Ресурсы"},
-          {category:"Дополнительные ресурсы", name:"OnliSkill - видеоуроки с 5 по 11 класс", link:"https://www.youtube.com/@OnliSkill", supercategory:"Ресурсы"}
+          {category:"Ещё ресурсы", name:"LearningApps упражнения и домашние задания", link:"https://learningapps.org", supercategory:"Ресурсы"},
+          {category:"Ещё ресурсы", name:"OnliSkill - видеоуроки с 5 по 11 класс", link:"https://www.youtube.com/@OnliSkill", supercategory:"Ресурсы"}
         ];
 
         // Слияние истории в "История России"
@@ -463,10 +463,10 @@
             if (resourcesMap) {
                 const mainRes = resourcesMap.get('Основные ресурсы');
                 if (mainRes?.length) app.appendChild(createAccordion('Основные ресурсы', mainRes, '📚'));
-                const extraRes = resourcesMap.get('Доп. ресурсы');
-                if (extraRes?.length) app.appendChild(createAccordion('Доп. ресурсы', extraRes, '🔧'));
+                const extraRes = resourcesMap.get('Ещё ресурсы');
+                if (extraRes?.length) app.appendChild(createAccordion('Ещё ресурсы', extraRes, '🔧'));
                 for (const [subj, items] of resourcesMap) {
-                    if (subj !== 'Основные ресурсы' && subj !== 'Доп. ресурсы' && items.length)
+                    if (subj !== 'Основные ресурсы' && subj !== 'Ещё ресурсы' && items.length)
                         app.appendChild(createAccordion(subj, items, '📎'));
                 }
             }
