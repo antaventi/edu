@@ -459,15 +459,14 @@
                 if (newSubMap.size) filteredGroups.set(superCat, newSubMap);
             }
             
-            // Порядок: Ресурсы (Основные → Дополнительные) → остальные → Дополнительно/Прочее
             const resourcesMap = filteredGroups.get('Ресурсы');
             if (resourcesMap) {
                 const mainRes = resourcesMap.get('Основные ресурсы');
                 if (mainRes?.length) app.appendChild(createAccordion('Основные ресурсы', mainRes, '📚'));
-                const extraRes = resourcesMap.get('Дополнительные ресурсы');
-                if (extraRes?.length) app.appendChild(createAccordion('Дополнительные ресурсы', extraRes, '🔧'));
+                const extraRes = resourcesMap.get('Доп. ресурсы');
+                if (extraRes?.length) app.appendChild(createAccordion('Доп. ресурсы', extraRes, '🔧'));
                 for (const [subj, items] of resourcesMap) {
-                    if (subj !== 'Основные ресурсы' && subj !== 'Дополнительные ресурсы' && items.length)
+                    if (subj !== 'Основные ресурсы' && subj !== 'Доп. ресурсы' && items.length)
                         app.appendChild(createAccordion(subj, items, '📎'));
                 }
             }
