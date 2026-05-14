@@ -14,7 +14,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Только темная тема — фиксированные цвета */
         body {
             --bg-page: #0f172a;
             --card-bg: #1e293b;
@@ -29,6 +28,7 @@
             --icon-bg: #0f172a;
             --transition-card: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             --chevron-color: #94a3b8;
+            --favorite-bg: rgba(245, 158, 11, 0.15);
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background: var(--bg-page);
             color: var(--text-primary);
@@ -36,8 +36,61 @@
         }
 
         .container {
-            max-width: 620px;
+            max-width: 680px;
             margin: 0 auto;
+        }
+
+        /* верхняя панель: избранное + поиск */
+        .top-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .favorite-toggle-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-light);
+            border-radius: 60px;
+            padding: 10px 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary);
+            transition: all 0.2s;
+            min-height: 48px;
+        }
+        .favorite-toggle-btn.active {
+            background: var(--favorite-bg);
+            border-color: #f59e0b;
+            color: #f59e0b;
+        }
+        .search-box {
+            flex: 1;
+            min-width: 180px;
+            position: relative;
+        }
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 48px;
+            border: 1px solid var(--border-light);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border 0.2s;
+            min-height: 48px;
+        }
+        .search-input:focus {
+            border-color: var(--accent-blue);
+        }
+        .search-input::placeholder {
+            color: var(--text-secondary);
         }
 
         /* аккордеон */
@@ -48,7 +101,6 @@
             border: 1px solid var(--border-light);
             overflow: hidden;
         }
-
         .accordion-header {
             display: flex;
             justify-content: space-between;
@@ -62,13 +114,13 @@
             gap: 12px;
             transition: background 0.2s;
             min-height: 64px;
-            touch-action: manipulation;
         }
         .accordion-header:active { background: var(--accent-soft); }
         .header-left {
             display: flex;
             align-items: center;
             gap: 12px;
+            flex-wrap: wrap;
         }
         .header-icon { font-size: 1.6rem; }
         .chevron {
@@ -101,15 +153,18 @@
             border: 1px solid var(--border-light);
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
             text-decoration: none;
             color: var(--text-primary);
             min-height: 72px;
             cursor: pointer;
+            position: relative;
         }
         .link-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
-        .link-card:active { transform: scale(0.97); }
-
+        .link-card.favorited {
+            border-left: 4px solid #f59e0b;
+            background: var(--favorite-bg);
+        }
         .platform-icon {
             flex-shrink: 0;
             width: 46px;
@@ -120,7 +175,6 @@
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
-            box-shadow: inset 0 1px 1px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.2);
         }
         .card-content { flex: 1; }
         .card-title {
@@ -129,6 +183,7 @@
             line-height: 1.35;
             margin-bottom: 6px;
             word-break: break-word;
+            padding-right: 32px;
         }
         .card-meta {
             font-size: 0.65rem;
@@ -146,9 +201,34 @@
             font-weight: 500;
         }
         .resh-badge { background: #3b82f630; color: #90caf9; }
-
+        .favorite-star {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.4rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #64748b;
+            transition: all 0.2s;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30px;
+            z-index: 2;
+        }
+        .favorite-star:hover { transform: translateY(-50%) scale(1.1); }
+        .favorite-star.active-star { color: #f59e0b; text-shadow: 0 0 4px rgba(245,158,11,0.5); }
+        .empty-message {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
         footer { margin-top: 40px; height: 20px; }
-
         @media (min-width: 768px) {
             body { padding: 24px 24px 48px; }
             .container { max-width: 740px; }
@@ -157,15 +237,19 @@
 </head>
 <body>
 <div class="container">
+    <div class="top-bar">
+        <button id="favoritesModeBtn" class="favorite-toggle-btn">⭐ Избранное</button>
+        <div class="search-box">
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 Поиск по названиям...">
+        </div>
+    </div>
     <div id="app"></div>
     <footer></footer>
 </div>
 
 <script>
     (function() {
-        // --------------------------------------------------------------
-        // ДАННЫЕ (полный список из ТЗ, без изменений, но с корректным слиянием истории)
-        // --------------------------------------------------------------
+        // ========== ДАННЫЕ (полный список + дополнительные ресурсы) ==========
         const rawLinks = [
           {category:"Математика (дополнительно)", name:"Карта математики", link:"https://ru.pinterest.com/pin/496944140146110856/", supercategory:"Математика и информатика"},
           {category:"Математика (дополнительно)", name:"Как познать всю математику САМОМУ? (за 20 минут)", link:"https://youtu.be/X2Z2eJNEEos", supercategory:"Математика и информатика"},
@@ -286,6 +370,9 @@
           {category:"Основные ресурсы", name:"ЯКласс — онлайн-тренажёр по 15 предметам, задания для ЕГЭ, ОГЭ, ВПР с автопроверкой и теорией", link:"https://www.yaklass.ru", supercategory:"Ресурсы"},
           {category:"Основные ресурсы", name:"ИнтернетУрок — библиотека видеоуроков, конспектов и тестов по всем предметам", link:"https://interneturok.ru", supercategory:"Ресурсы"},
           {category:"Основные ресурсы", name:"Фоксфорд", link:"https://foxford.ru", supercategory:"Ресурсы"},
+          // НОВЫЕ РЕСУРСЫ (Pomodoro + Tweek)
+          {category:"Основные ресурсы", name:"🍅 Pomodoro Трекер", link:"https://pomodoro-tracker.com/?lang=ru", supercategory:"Ресурсы"},
+          {category:"Основные ресурсы", name:"✅ Tweek — планировщик задач", link:"https://tweek.so/ru", supercategory:"Ресурсы"},
           {category:"Дополнительные ресурсы", name:"Навигатор самостоятельной подготовки к ОГЭ — пошаговые рекомендации по каждому предмету от разработчиков экзамена", link:"https://fipi.ru/navigator-podgotovki/navigator-oge", supercategory:"Ресурсы"},
           {category:"Основные ресурсы", name:"РЕШУ ЕГЭ/ОГЭ/ВПР (СдамГИА) — тренажёр с огромным банком заданий", link:"https://sdamgia.ru", supercategory:"Ресурсы"},
           {category:"Основные ресурсы", name:"Инфоурок - огромное количество материалов, включая КИМ", link:"https://infourok.ru/", supercategory:"Ресурсы"},
@@ -293,14 +380,12 @@
           {category:"Дополнительные ресурсы", name:"OnliSkill - видеоуроки с 5 по 11 класс", link:"https://www.youtube.com/@OnliSkill", supercategory:"Ресурсы"}
         ];
 
-        // 1. СЛИЯНИЕ: перемещаем все "История" → "История России"
+        // Слияние истории в "История России"
         for (let i = 0; i < rawLinks.length; i++) {
-            if (rawLinks[i].category === "История") {
-                rawLinks[i].category = "История России";
-            }
+            if (rawLinks[i].category === "История") rawLinks[i].category = "История России";
         }
 
-        // 2. Утилиты
+        // Утилиты
         const getIcon = (link) => {
             if (link.includes('youtu.be') || link.includes('youtube.com')) return '🎬';
             if (link.includes('rutube.ru')) return '▶️';
@@ -308,16 +393,17 @@
             if (link.includes('telegram')) return '📱';
             if (link.includes('resh.edu')) return '🏛️';
             if (link.includes('pinterest')) return '📌';
+            if (link.includes('pomodoro')) return '🍅';
+            if (link.includes('tweek')) return '✅';
             return '🔗';
         };
-
         const getPriority = (link) => {
             if (link.includes('resh.edu.ru')) return 1;
             if (link.includes('youtu.be') || link.includes('youtube.com')) return 2;
             return 3;
         };
 
-        // 3. Группировка: supercategory → Map(предмет → массив)
+        // Группировка
         const groups = new Map();
         for (const item of rawLinks) {
             const superCat = item.supercategory.trim();
@@ -327,58 +413,137 @@
             if (!subMap.has(subject)) subMap.set(subject, []);
             subMap.get(subject).push(item);
         }
-
-        // 4. Сортировка элементов внутри каждого предмета (РЭШ → YouTube)
         for (const subMap of groups.values()) {
             for (const items of subMap.values()) {
                 items.sort((a, b) => getPriority(a.link) - getPriority(b.link));
             }
         }
 
-        // 5. Функция создания аккордеона
-        function createAccordion(title, items, iconEmoji = '📚') {
-            if (!items.length) return null;
+        // Работа с избранным (localStorage)
+        let favorites = new Set();
+        try {
+            const saved = localStorage.getItem('favorites_8class');
+            if (saved) favorites = new Set(JSON.parse(saved));
+        } catch(e) {}
+        function saveFavorites() {
+            localStorage.setItem('favorites_8class', JSON.stringify([...favorites]));
+        }
+        function isFavorite(link) { return favorites.has(link); }
+        function toggleFavorite(link) {
+            if (favorites.has(link)) favorites.delete(link);
+            else favorites.add(link);
+            saveFavorites();
+        }
+
+        // Состояние: режим показа только избранного
+        let showOnlyFavorites = false;
+        let currentSearchQuery = "";
+
+        // Функция отрисовки с фильтрацией
+        function renderApp() {
+            const app = document.getElementById('app');
+            app.innerHTML = '';
+            
+            // Фильтруем группы: показываем только те предметы, в которых есть хоть одна ссылка, подходящая под фильтр
+            const filteredGroups = new Map();
+            for (const [superCat, subMap] of groups) {
+                const newSubMap = new Map();
+                for (const [subject, items] of subMap) {
+                    let filteredItems = items.filter(item => {
+                        const matchesSearch = currentSearchQuery === "" || item.name.toLowerCase().includes(currentSearchQuery.toLowerCase());
+                        const matchesFavorite = !showOnlyFavorites || favorites.has(item.link);
+                        return matchesSearch && matchesFavorite;
+                    });
+                    if (filteredItems.length) newSubMap.set(subject, filteredItems);
+                }
+                if (newSubMap.size) filteredGroups.set(superCat, newSubMap);
+            }
+            
+            // Порядок: Ресурсы (Основные → Дополнительные) → остальные → Дополнительно/Прочее
+            const resourcesMap = filteredGroups.get('Ресурсы');
+            if (resourcesMap) {
+                const mainRes = resourcesMap.get('Основные ресурсы');
+                if (mainRes?.length) app.appendChild(createAccordion('Основные ресурсы', mainRes, '📚'));
+                const extraRes = resourcesMap.get('Дополнительные ресурсы');
+                if (extraRes?.length) app.appendChild(createAccordion('Дополнительные ресурсы', extraRes, '🔧'));
+                for (const [subj, items] of resourcesMap) {
+                    if (subj !== 'Основные ресурсы' && subj !== 'Дополнительные ресурсы' && items.length)
+                        app.appendChild(createAccordion(subj, items, '📎'));
+                }
+            }
+            const extraSuper = 'Дополнительно / Прочее';
+            const mainSuper = Array.from(filteredGroups.keys()).filter(k => k !== 'Ресурсы' && k !== extraSuper).sort();
+            for (const superCat of mainSuper) {
+                const subMap = filteredGroups.get(superCat);
+                if (!subMap) continue;
+                const subjects = Array.from(subMap.keys()).sort();
+                for (const subject of subjects) {
+                    const items = subMap.get(subject);
+                    if (!items.length) continue;
+                    let icon = '📖';
+                    if (subject.includes('Математика')) icon = '📐';
+                    else if (subject.includes('Алгебра')) icon = '📐';
+                    else if (subject.includes('Геометрия')) icon = '📏';
+                    else if (subject.includes('Русский')) icon = '📝';
+                    else if (subject.includes('Английский')) icon = '🇬🇧';
+                    else if (subject.includes('Литература')) icon = '📖';
+                    else if (subject.includes('Физика')) icon = '⚡';
+                    else if (subject.includes('Химия')) icon = '🧪';
+                    else if (subject.includes('Биология')) icon = '🧬';
+                    else if (subject.includes('История России')) icon = '🏛️';
+                    else if (subject.includes('Всеобщая история')) icon = '🌍';
+                    else if (subject.includes('Обществознание')) icon = '⚖️';
+                    else if (subject.includes('География')) icon = '🌍';
+                    else if (subject.includes('Информатика')) icon = '💻';
+                    else if (subject.includes('Технология')) icon = '🔧';
+                    else if (subject.includes('ИЗО')) icon = '🎨';
+                    else if (subject.includes('Музыка')) icon = '🎵';
+                    else if (subject.includes('ОБЖ')) icon = '🛡️';
+                    else if (subject.includes('Физкультура')) icon = '⚽';
+                    app.appendChild(createAccordion(subject, items, icon));
+                }
+            }
+            const extraMap = filteredGroups.get(extraSuper);
+            if (extraMap) {
+                for (const [subject, items] of extraMap) {
+                    if (items.length) app.appendChild(createAccordion(subject, items, '🎭'));
+                }
+            }
+            if (app.children.length === 0) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'empty-message';
+                emptyDiv.innerText = showOnlyFavorites ? "⭐ Нет сохранённых ссылок. Добавьте в избранное!" : "🔍 Ничего не найдено. Попробуйте другой запрос.";
+                app.appendChild(emptyDiv);
+            }
+        }
+        
+        function createAccordion(title, items, iconEmoji) {
             const accordion = document.createElement('div');
             accordion.className = 'accordion-item';
-            
             const header = document.createElement('div');
             header.className = 'accordion-header';
-            header.innerHTML = `
-                <div class="header-left">
-                    <span class="header-icon">${iconEmoji}</span>
-                    <span>${escapeHtml(title)}</span>
-                </div>
-                <span class="chevron">▼</span>
-            `;
-            
+            header.innerHTML = `<div class="header-left"><span class="header-icon">${iconEmoji}</span><span>${escapeHtml(title)}</span></div><span class="chevron">▼</span>`;
             const content = document.createElement('div');
             content.className = 'accordion-content';
             const container = document.createElement('div');
             container.className = 'links-container';
-            
             for (const linkItem of items) {
                 let displayName = linkItem.name.replace(/🔴 ▶️|▶️/g, '').trim();
-                if (linkItem.link.includes('resh.edu.ru') && !displayName.includes('РЭШ')) {
-                    displayName = `🏫 ${displayName}`;
-                }
-                
+                if (linkItem.link.includes('resh.edu.ru') && !displayName.includes('РЭШ')) displayName = `🏫 ${displayName}`;
                 const card = document.createElement('a');
                 card.className = 'link-card';
+                if (isFavorite(linkItem.link)) card.classList.add('favorited');
                 card.href = linkItem.link;
                 card.target = '_blank';
                 card.rel = 'noopener noreferrer';
-                
                 const iconDiv = document.createElement('div');
                 iconDiv.className = 'platform-icon';
                 iconDiv.textContent = getIcon(linkItem.link);
-                
                 const contentDiv = document.createElement('div');
                 contentDiv.className = 'card-content';
-                
                 const titleDiv = document.createElement('div');
                 titleDiv.className = 'card-title';
                 titleDiv.textContent = displayName;
-                
                 const metaDiv = document.createElement('div');
                 metaDiv.className = 'card-meta';
                 const badge = document.createElement('span');
@@ -386,7 +551,6 @@
                 if (linkItem.link.includes('resh.edu.ru')) badge.classList.add('resh-badge');
                 badge.textContent = linkItem.category;
                 metaDiv.appendChild(badge);
-                
                 if (linkItem.link.includes('resh.edu.ru')) {
                     const reshLabel = document.createElement('span');
                     reshLabel.className = 'badge-cat';
@@ -394,28 +558,35 @@
                     reshLabel.textContent = 'РЭШ';
                     metaDiv.appendChild(reshLabel);
                 }
-                
                 contentDiv.appendChild(titleDiv);
                 contentDiv.appendChild(metaDiv);
                 card.appendChild(iconDiv);
                 card.appendChild(contentDiv);
+                // Звездочка избранного (отдельная кнопка, чтобы не мешала переходу)
+                const starBtn = document.createElement('button');
+                starBtn.className = 'favorite-star';
+                starBtn.innerHTML = isFavorite(linkItem.link) ? '⭐' : '☆';
+                if (isFavorite(linkItem.link)) starBtn.classList.add('active-star');
+                starBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleFavorite(linkItem.link);
+                    renderApp(); // полный ререндер для обновления звезд и режима избранного
+                });
+                card.appendChild(starBtn);
                 container.appendChild(card);
             }
-            
             content.appendChild(container);
             accordion.appendChild(header);
             accordion.appendChild(content);
-            
-            header.addEventListener('click', (e) => {
-                e.stopPropagation();
+            header.addEventListener('click', () => {
                 const isOpen = content.classList.contains('show');
                 content.classList.toggle('show');
                 header.classList.toggle('open');
             });
-            
             return accordion;
         }
-
+        
         function escapeHtml(str) {
             return str.replace(/[&<>]/g, function(m) {
                 if (m === '&') return '&amp;';
@@ -424,66 +595,22 @@
                 return m;
             });
         }
-
-        // 6. Рендер с порядком: Ресурсы (Основные → Дополнительные) → остальные (по алфавиту) → Дополнительно/Прочее
-        const app = document.getElementById('app');
-        app.innerHTML = '';
         
-        // Ресурсы
-        const resources = groups.get('Ресурсы');
-        if (resources) {
-            const mainRes = resources.get('Основные ресурсы');
-            if (mainRes?.length) app.appendChild(createAccordion('Основные ресурсы', mainRes, '📚'));
-            const extraRes = resources.get('Дополнительные ресурсы');
-            if (extraRes?.length) app.appendChild(createAccordion('Дополнительные ресурсы', extraRes, '🔧'));
-            // остальные ресурсы, если есть (на всякий случай)
-            for (const [subj, items] of resources) {
-                if (subj !== 'Основные ресурсы' && subj !== 'Дополнительные ресурсы' && items.length) {
-                    app.appendChild(createAccordion(subj, items, '📎'));
-                }
-            }
-        }
-        
-        // Основные предметы (все кроме Ресурсы и Дополнительно/Прочее)
-        const extraSuper = 'Дополнительно / Прочее';
-        const mainSuper = Array.from(groups.keys()).filter(k => k !== 'Ресурсы' && k !== extraSuper).sort();
-        for (const superCat of mainSuper) {
-            const subMap = groups.get(superCat);
-            const subjects = Array.from(subMap.keys()).sort();
-            for (const subject of subjects) {
-                const items = subMap.get(subject);
-                if (!items.length) continue;
-                let icon = '📖';
-                if (subject.includes('Математика')) icon = '📐';
-                else if (subject.includes('Алгебра')) icon = '📐';
-                else if (subject.includes('Геометрия')) icon = '📏';
-                else if (subject.includes('Русский')) icon = '📝';
-                else if (subject.includes('Английский')) icon = '🇬🇧';
-                else if (subject.includes('Литература')) icon = '📖';
-                else if (subject.includes('Физика')) icon = '⚡';
-                else if (subject.includes('Химия')) icon = '🧪';
-                else if (subject.includes('Биология')) icon = '🧬';
-                else if (subject.includes('История России')) icon = '🏛️';
-                else if (subject.includes('Всеобщая история')) icon = '🌍';
-                else if (subject.includes('Обществознание')) icon = '⚖️';
-                else if (subject.includes('География')) icon = '🌍';
-                else if (subject.includes('Информатика')) icon = '💻';
-                else if (subject.includes('Технология')) icon = '🔧';
-                else if (subject.includes('ИЗО')) icon = '🎨';
-                else if (subject.includes('Музыка')) icon = '🎵';
-                else if (subject.includes('ОБЖ')) icon = '🛡️';
-                else if (subject.includes('Физкультура')) icon = '⚽';
-                app.appendChild(createAccordion(subject, items, icon));
-            }
-        }
-        
-        // Дополнительно / Прочее в самом низу
-        const extraMap = groups.get(extraSuper);
-        if (extraMap) {
-            for (const [subject, items] of extraMap) {
-                if (items.length) app.appendChild(createAccordion(subject, items, '🎭'));
-            }
-        }
+        // Инициализация событий поиска и кнопки избранного
+        const searchInput = document.getElementById('searchInput');
+        const favBtn = document.getElementById('favoritesModeBtn');
+        searchInput.addEventListener('input', (e) => {
+            currentSearchQuery = e.target.value;
+            renderApp();
+        });
+        favBtn.addEventListener('click', () => {
+            showOnlyFavorites = !showOnlyFavorites;
+            if (showOnlyFavorites) favBtn.classList.add('active');
+            else favBtn.classList.remove('active');
+            renderApp();
+        });
+        if (showOnlyFavorites) favBtn.classList.add('active');
+        renderApp();
     })();
 </script>
 </body>
