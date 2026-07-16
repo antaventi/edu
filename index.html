@@ -2,45 +2,38 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Учебный навигатор | 8 класс</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet"></noscript>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
         }
-
         body {
             --bg-page: #0f172a;
             --card-bg: #1e293b;
             --text-primary: #f1f5f9;
             --text-secondary: #cbd5e1;
             --border-light: #334155;
-            --shadow-sm: 0 8px 20px rgba(0, 0, 0, 0.4);
-            --shadow-hover: 0 16px 28px rgba(0, 0, 0, 0.6);
+            --shadow-sm: 0 8px 20px rgba(0,0,0,0.4);
+            --shadow-hover: 0 16px 28px rgba(0,0,0,0.6);
             --accent-blue: #3b82f6;
             --accent-soft: #2d3a5e;
             --category-badge: #334155;
             --icon-bg: #0f172a;
-            --transition-card: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            --transition-card: all 0.2s cubic-bezier(0.2,0.9,0.4,1.1);
             --chevron-color: #94a3b8;
-            --favorite-bg: rgba(245, 158, 11, 0.15);
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --favorite-bg: rgba(245,158,11,0.15);
+            font-family: system-ui, -apple-system, sans-serif;
             background: var(--bg-page);
             color: var(--text-primary);
             padding: 20px 16px 48px;
         }
-
         .container {
             max-width: 680px;
             margin: 0 auto;
         }
-
-        /* верхняя панель: избранное + поиск */
         .top-bar {
             display: flex;
             flex-wrap: wrap;
@@ -63,6 +56,7 @@
             color: var(--text-primary);
             transition: all 0.2s;
             min-height: 48px;
+            touch-action: manipulation;
         }
         .favorite-toggle-btn.active {
             background: var(--favorite-bg);
@@ -85,6 +79,7 @@
             outline: none;
             transition: border 0.2s;
             min-height: 48px;
+            -webkit-appearance: none;
         }
         .search-input:focus {
             border-color: var(--accent-blue);
@@ -92,8 +87,6 @@
         .search-input::placeholder {
             color: var(--text-secondary);
         }
-
-        /* аккордеон */
         .accordion-item {
             margin-bottom: 16px;
             border-radius: 20px;
@@ -114,36 +107,43 @@
             gap: 12px;
             transition: background 0.2s;
             min-height: 64px;
+            touch-action: manipulation;
         }
-        .accordion-header:active { background: var(--accent-soft); }
+        .accordion-header:active {
+            background: var(--accent-soft);
+        }
         .header-left {
             display: flex;
             align-items: center;
             gap: 12px;
             flex-wrap: wrap;
         }
-        .header-icon { font-size: 1.6rem; }
+        .header-icon {
+            font-size: 1.6rem;
+        }
         .chevron {
             font-size: 1.2rem;
             transition: transform 0.25s ease;
             color: var(--chevron-color);
         }
-        .accordion-header.open .chevron { transform: rotate(180deg); }
+        .accordion-header.open .chevron {
+            transform: rotate(180deg);
+        }
         .accordion-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+            transition: max-height 0.4s cubic-bezier(0.33,1,0.68,1);
             background: var(--bg-page);
         }
-        .accordion-content.show { max-height: 3000px; }
+        .accordion-content.show {
+            max-height: 3000px;
+        }
         .links-container {
             padding: 16px 16px 20px;
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
-
-        /* карточка */
         .link-card {
             background: var(--card-bg);
             border-radius: 20px;
@@ -160,7 +160,10 @@
             cursor: pointer;
             position: relative;
         }
-        .link-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+        .link-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
         .link-card.favorited {
             border-left: 4px solid #f59e0b;
             background: var(--favorite-bg);
@@ -176,7 +179,9 @@
             justify-content: center;
             font-size: 1.5rem;
         }
-        .card-content { flex: 1; }
+        .card-content {
+            flex: 1;
+        }
         .card-title {
             font-weight: 600;
             font-size: 0.94rem;
@@ -200,7 +205,6 @@
             font-size: 0.65rem;
             font-weight: 500;
         }
-        .resh-badge { background: #3b82f630; color: #90caf9; }
         .favorite-star {
             position: absolute;
             right: 14px;
@@ -219,19 +223,32 @@
             justify-content: center;
             border-radius: 30px;
             z-index: 2;
+            touch-action: manipulation;
         }
-        .favorite-star:hover { transform: translateY(-50%) scale(1.1); }
-        .favorite-star.active-star { color: #f59e0b; text-shadow: 0 0 4px rgba(245,158,11,0.5); }
+        .favorite-star:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+        .favorite-star.active-star {
+            color: #f59e0b;
+            text-shadow: 0 0 4px rgba(245,158,11,0.5);
+        }
         .empty-message {
             text-align: center;
             padding: 40px 20px;
             color: var(--text-secondary);
             font-size: 0.9rem;
         }
-        footer { margin-top: 40px; height: 20px; }
+        footer {
+            margin-top: 40px;
+            height: 20px;
+        }
         @media (min-width: 768px) {
-            body { padding: 24px 24px 48px; }
-            .container { max-width: 740px; }
+            body {
+                padding: 24px 24px 48px;
+            }
+            .container {
+                max-width: 740px;
+            }
         }
     </style>
 </head>
@@ -248,369 +265,394 @@
 </div>
 
 <script>
-    (function() {
-        // ========== ДАННЫЕ (полный список + дополнительные ресурсы) ==========
-        const rawLinks = [
-          {category:"Математика (дополнительно)", name:"Карта математики", link:"https://ru.pinterest.com/pin/496944140146110856/", supercategory:"Математика и информатика"},
-          {category:"Математика (дополнительно)", name:"Как познать всю математику САМОМУ? (за 20 минут)", link:"https://youtu.be/X2Z2eJNEEos", supercategory:"Математика и информатика"},
-          {category:"Математика (дополнительно)", name:"ВСЯ АЛГЕБРА 7 КЛАССА ЗА 10 МИНУТ", link:"https://youtu.be/nn8Duo_bQY4", supercategory:"Математика и информатика"},
-          {category:"Математика (дополнительно)", name:"Комплексный канал о математике", link:"https://www.youtube.com/@MathEasy", supercategory:"Математика и информатика"},
-          {category:"Алгебра", name:"Рекомендованный учебник математики", link:"https://no.11klasov.net/4263-algebra-8-klass-uchebnik-v-3-chastyah-peterson-lg-i-dr.html", supercategory:"Математика и информатика"},
-          {category:"Математика (дополнительно)", name:"Вся Математика за 12 часов, с Нуля до Профиля ЕГЭ", link:"https://youtu.be/bOd_ecJon9s", supercategory:"Математика и информатика"},
-          {category:"Математика (дополнительно)", name:"Плейлист со школьной алгеброй", link:"https://youtube.com/playlist?list=PLnp1b0c7z98qMo0CEm36RVN8x3BuodrqJ&si=8WQO5QkL167k7yej", supercategory:"Математика и информатика"},
-          {category:"Математика (дополнительно)", name:"Плейлист \"Математика с 0 (Путь к ОГЭ)\"", link:"https://youtube.com/playlist?list=PLxv1GWnBLw5EftKHNoN2qjWH5MEVL79NI&si=UAPOrAB6r23gWOee", supercategory:"Математика и информатика"},
-          {category:"Математика (дополнительно)", name:"Введение в математику", link:"https://www.youtube.com/playlist?list=PLSvRPXojWOmSDZk16TrWogtNi5n6iqi72", supercategory:"Математика и информатика"},
-          {category:"Математика (дополнительно)", name:"Подготовка к ЕГЭ 2021 по физике и математике от МФТИ", link:"https://abitu.net/ege/3838137", supercategory:"Математика и информатика"},
-          {category:"Алгебра", name:"Алгебра 8 класс С НУЛЯ до ОГЭ по математике | Умскул", link:"https://youtu.be/CPYRPvTBuTA?si=X4CVIP8KYhcj2lfL", supercategory:"Математика и информатика"},
-          {category:"Алгебра", name:"Вся теория алгебры для ВПР 8 класса", link:"https://www.youtube.com/watch?v=A_y9cDeZM2Y", supercategory:"Математика и информатика"},
-          {category:"Алгебра", name:"Вся алгебра 8 класса | Умскул", link:"https://youtu.be/0vMnKTlmcls?si=KMOqHq6HG-gUN_IS", supercategory:"Математика и информатика"},
-          {category:"Алгебра", name:"Алгебра - 8 класс (плейлист)", link:"https://www.youtube.com/playlist?list=PLCRqj4jDCIYkk9CMV6wBQR16eHz_SRU1j", supercategory:"Математика и информатика"},
-          {category:"Геометрия", name:"Вся геометрия за 8 класс | Математика ОГЭ – Дядя Артем", link:"https://youtu.be/jXiUyBI8yOs?si=pnIdf7VWmAaUSU7X", supercategory:"Математика и информатика"},
-          {category:"Геометрия", name:"Вся Геометрия с Нуля за 50 минут, для Чайников", link:"https://youtu.be/WKZwvaeEds0?si=CvFgmz_gIQcNBKqv", supercategory:"Математика и информатика"},
-          {category:"Геометрия", name:"Геометрия - 8 класс. Плейлист", link:"https://youtube.com/playlist?list=PLeRoaPcjXF1ecF21g27Q7ZDfF8Gktvwf0&si=HdGOGqiXcSb2b_US", supercategory:"Математика и информатика"},
-          {category:"Вероятность и статистика", name:"Вероятность и статистика. 8 класс. Плейлист", link:"https://www.youtube.com/playlist?list=PLM5ldtp1CGmphTC2DOC4AX9v3a6GlLZHt", supercategory:"Математика и информатика"},
-          {category:"Вероятность и статистика", name:"Вся теория вероятностей для экзамена за 20 минут. ЕГЭ профильный, Базовый, ОГЭ", link:"https://youtu.be/wa9DPJJ80rY", supercategory:"Математика и информатика"},
-          {category:"Информатика", name:"Вся информатика 8 класса с нуля | Информатика ОГЭ Умскул", link:"https://youtu.be/94Ai8jNVRiY?si=JfV_rSkp3ZeewNlr", supercategory:"Математика и информатика"},
-          {category:"Информатика", name:"Информатика 8 класс. Плейлист", link:"https://www.youtube.com/playlist?list=PLvtJKssE5NrgKMB5Utz58w8FtIxOW5X7R", supercategory:"Математика и информатика"},
-          {category:"Геометрия", name:"ГЕОМЕТРИЯ - 8 класс (плейлист Rutube)", link:"https://rutube.ru/plst/610197/?r=wd", supercategory:"Математика и информатика"},
-          {category:"Алгебра", name:"АЛГЕБРА - 8 класс (плейлист Rutube)", link:"https://rutube.ru/plst/561723/", supercategory:"Математика и информатика"},
-          {category:"Алгебра", name:"ВПР по математике 8 класс за 45 минут (Rutube)", link:"https://rutube.ru/video/c7b5933a42c8fa01c14585cc88362101/", supercategory:"Математика и информатика"},
-          {category:"Вероятность и статистика", name:"Вероятность, статистика, графы. ВПР по математике 7-8 класс  (Rutube)", link:"https://rutube.ru/video/74faadd9084dc0fcb056ca144cebf411/", supercategory:"Математика и информатика"},
-          {category:"Вероятность и статистика", name:"8 класс. Вероятность и статистика (плейлист Rutube)", link:"https://rutube.ru/plst/647881/", supercategory:"Математика и информатика"},
-          {category:"Информатика", name:"ВПР-2026 по информатике (Rutube)", link:"https://rutube.ru/video/565250a4a009c8b7101de25276a76d6c/", supercategory:"Математика и информатика"},
-          {category:"Информатика", name:"Информатика 8 класс. Работаем по обновленным ФГОС (плейлист Rutube)", link:"https://rutube.ru/plst/536055/", supercategory:"Математика и информатика"},
-          {category:"Информатика", name:"Вся информатика 8 класса С НУЛЯ (Rutube)", link:"https://rutube.ru/video/53e8e7fe4b2e649b63acc60714b111dd/", supercategory:"Математика и информатика"},
-          {category:"Русский язык", name:"Весь русский язык за 8 класс за ОДИН урок | Умскул", link:"https://youtu.be/YStxafJlWS0?si=H1Qm1A0X053K2pNc", supercategory:"Русский язык и литература, английский язык"},
-          {category:"Английский язык", name:"Топовый обучающий канал (английский язык)", link:"https://www.youtube.com/@БЕСПЛАТНЫЙРЕПЕТИТОР-АНГЛИЙСКИЙ", supercategory:"Русский язык и литература, английский язык"},
-          {category:"Английский язык", name:"Топовый обучающий канал (английский язык, Rutube)", link:"https://rutube.ru/channel/23905073/", supercategory:"Русский язык и литература, английский язык"},
-          {category:"Английский язык", name:"Полный БЕСПЛАТНЫЙ КУРС АНГЛИЙСКОГО ЯЗЫКА (8 часов)", link:"https://youtu.be/s9Ik82fYb3Y", supercategory:"Русский язык и литература, английский язык"},
-          {category:"Английский язык", name:"Как я ВЫУЧИЛ БЫ английский, ЕСЛИ БЫ ЗАБЫЛ его: пошаговый план с нуля | Virginia Beowulf", link:"https://youtu.be/DetUFYaC9cQ", supercategory:"Русский язык и литература, английский язык"},
-          {category:"Английский язык", name:"Плейлист \"Английский язык\"", link:"https://www.youtube.com/playlist?list=PLho0jPYl5RAG1gH4_E26q5g6sRGl2Y3Kp", supercategory:"Русский язык и литература, английский язык"},
-          {category:"Английский язык", name:"Весь Английский язык за 8 класс за 30 минут", link:"https://youtu.be/xZkLAZMI9vI", supercategory:"Русский язык и литература, английский язык"},
-          {category:"Английский язык", name:"Плейлист Английский язык 8 класс", link:"https://www.youtube.com/playlist?list=PLrpAqXzEvTyzetkfhHCuavQdBFPcpUVyk", supercategory:"Русский язык и литература, английский язык"},
-          {category:"Английский язык", name:"ВПР Английский язык 8 класс (плейлист Rutube)", link:"https://rutube.ru/plst/914028/", supercategory:"Русский язык и литература, английский язык"},
-          {category:"Английский язык", name:"8 класс. Английский язык (плейлист Rutube)", link:"https://rutube.ru/plst/1210660?r=wd", supercategory:"Русский язык и литература, английский язык"},
-          {category:"Английский язык", name:"Лучшие методы изучения английского", link:"https://vk.com/wall-36147615_830607", supercategory:"Русский язык и литература, английский язык"},
-          {category:"Русский язык", name:"Плейлист Русский язык", link:"https://youtube.com/playlist?list=PLo8q60XhDXRSdVsJ-MppXdxVyKZCX1lm1&si=YNzUWbR8dQuAjReD", supercategory:"Русский язык и литература, английский язык"},
-          {category:"Русский язык", name:"Весь русский язык за 8 класс за ОДИН урок | Умскул (плейлист Rutube)", link:"https://rutube.ru/video/b47017d27b5a063f10edc0292969d707/", supercategory:"Русский язык и литература, английский язык"},
-          {category:"Русский язык", name:"Русский язык. 8 класс  (плейлист Rutube)", link:"https://rutube.ru/plst/1470069?r=wd", supercategory:"Русский язык и литература, английский язык"},
-          {category:"Литература", name:"Спидран русской литературы", link:"https://youtu.be/P1OD_teLcdY", supercategory:"Русский язык и литература, английский язык"},
-          {category:"Литература", name:"Литература 8 класс (плейлист)", link:"https://youtube.com/playlist?list=PLrpAqXzEvTyyzTh9bQQ3hdAZZnfW2YfVL&si=I0y_lzjbaxj9EZfm", supercategory:"Русский язык и литература, английский язык"},
-          {category:"Литература", name:"Литература 8 класс (плейлист Rutube)", link:"https://rutube.ru/plst/332929?r=wd", supercategory:"Русский язык и литература, английский язык"},
-          {category:"Литература", name:"Разбор РЕАЛЬНЫХ ВАРИАНТОВ ВПР по литературе 2026 для 8 класса (Rutube)", link:"https://rutube.ru/video/9f8bf06037a6a87767eb364c5abc1e60/", supercategory:"Русский язык и литература, английский язык"},
-          {category:"Физика", name:"Школьная Программа 8 класс по Физике за 27 Минут!", link:"https://youtu.be/6Y3gikcjuV0?si=LDG1jvUdddlsIpTr", supercategory:"Естественно-научные предметы"},
-          {category:"Физика", name:"ВСЯ ФИЗИКА за 17 минут! Ты поймёшь ВСЁ", link:"https://www.youtube.com/watch?v=InVqXPQzWqY", supercategory:"Естественно-научные предметы"},
-          {category:"Физика", name:"Вся Физика 8 Класс за 50 Минут", link:"https://youtu.be/u_L9m-J9Ue8?si=YFH3ORxZUjeuEJ3b", supercategory:"Естественно-научные предметы"},
-          {category:"Физика", name:"Плейлист: Физика 8 класс", link:"https://www.youtube.com/playlist?list=PLvtJKssE5NrgKwiO2c5L7LeavpLaNpaau", supercategory:"Естественно-научные предметы"},
-          {category:"Физика", name:"Физика 8 класс (плейлист Rutube)", link:"https://rutube.ru/plst/277644?r=wd", supercategory:"Естественно-научные предметы"},
-          {category:"Физика", name:"Вся физика 8 КЛАССА за 1 час для ОГЭ по Физике | Умскул (Rutube)", link:"https://rutube.ru/video/635138b054e5188cb2e0112a522aeea1/", supercategory:"Естественно-научные предметы"},
-          {category:"Химия", name:"Вспомнить все: Химия 8 класс за один урок I ОГЭ по Химии | Умскул", link:"https://youtu.be/dzlyC3PLD74?si=jTHKyeS4BD1RDOok", supercategory:"Естественно-научные предметы"},
-          {category:"Химия", name:"Химия 8 класс (плейлист)", link:"https://www.youtube.com/playlist?list=PLrpAqXzEvTyxSgGS5qjm-hjuUAmUEQ1Er", supercategory:"Естественно-научные предметы"},
-          {category:"Химия", name:"Плейлист: Химия 8 класс", link:"https://youtube.com/playlist?list=PL92ykBQNNakGSVVG9ign5cT3xHo7gkvt2&si=zse3y2kn5g6f7CaE", supercategory:"Естественно-научные предметы"},
-          {category:"Химия", name:"ВСЯ химия 8-го класса за 2 ЧАСА (Rutube)", link:"https://rutube.ru/video/331ee8b8531eb3e9bd048756e0dccb4a/", supercategory:"Естественно-научные предметы"},
-          {category:"Химия", name:"Химия 8 класс (плейлист Rutube)", link:"https://rutube.ru/plst/304416?r=wd", supercategory:"Естественно-научные предметы"},
-          {category:"Биология", name:"ВСЯ биология 8 класса С НУЛЯ: подробный разбор I Онлайн урок по биологии I Умскул", link:"https://youtu.be/CAxg65ezEkY?si=Jt-7V5wt5XWl3nPc", supercategory:"Естественно-научные предметы"},
-          {category:"Биология", name:"Изучить биологию за 360 секунд", link:"https://www.youtube.com/watch?v=5pP_O94GdW4", supercategory:"Естественно-научные предметы"},
-          {category:"Биология", name:"Плейлист Биология", link:"https://www.youtube.com/playlist?list=PLrpAqXzEvTyzWdZEoZrOvm0cZEcOUt8Td", supercategory:"Естественно-научные предметы"},
-          {category:"Биология", name:"Биология 8 класс (плейлист Rutube)", link:"https://rutube.ru/plst/331816?r=wd", supercategory:"Естественно-научные предметы"},
-          {category:"Биология", name:"ВСЯ биология 8 класса: подробный разбор I ВПР по биологии I Умскул (Rutube)", link:"https://rutube.ru/video/c84c53f9602ec2a705b46821ac5539af/", supercategory:"Естественно-научные предметы"},
-          {category:"Всеобщая история", name:"Решаю ВПР / МЦКО по истории за 8 класс: подробный разбор 2026 | Онлайн школа «Умскул»", link:"https://youtu.be/9rGYazUenBM?si=knWK1h5F76spz_4C", supercategory:"Общественно-научные предметы"},
-          {category:"Всеобщая история", name:"Вся история 8 класса за 1 час: разбор событий I История ОГЭ | Умскул", link:"https://youtu.be/8GdHA5UFJhs?si=VGmpKiPtzuk6TW_w", supercategory:"Общественно-научные предметы"},
-          {category:"Всеобщая история", name:"Всеобщая История 8 Класс, Мединский (плейлист)", link:"https://www.youtube.com/playlist?list=PLDPC6dfN5lN8jxYS4ohSOoqx7ciJl-Fum", supercategory:"Общественно-научные предметы"},
-          {category:"Всеобщая история", name:"8 класс - Всеобщая история (плейлист Rutube)", link:"https://rutube.ru/plst/850800?r=wd", supercategory:"Общественно-научные предметы"},
-          {category:"Всеобщая история", name:"ПОЛНАЯ ИСТОРИЯ ЕВРОПЫ В XIX-НАЧАЛЕ XX ВВ. | ВСЕМИРНАЯ ИСТОРИЯ, 8 КЛАСС (Rutube)", link:"https://rutube.ru/video/a7e5ca2e1cc5b104ef856bd3770bffed/", supercategory:"Общественно-научные предметы"},
-          {category:"История России", name:"История России 8 класс. Мединский 2025 (плейлист)", link:"https://www.youtube.com/playlist?list=PLDPC6dfN5lN_lWcUzQLrxUHktmat8193l", supercategory:"Общественно-научные предметы"},
-          {category:"История России", name:"Вся история 8 класса за 1 час: разбор событий I История ОГЭ | Умскул", link:"https://youtu.be/8GdHA5UFJhs?si=VXstjy6n2Sf-_on0", supercategory:"Общественно-научные предметы"},
-          {category:"История России", name:"8 класс - История России (плейлист Rutube)", link:"https://rutube.ru/plst/849536?r=wd", supercategory:"Общественно-научные предметы"},
-          {category:"История России", name:"История России 8 класс Мединский Торкунов краткий пересказ  (плейлист Rutube)", link:"https://rutube.ru/plst/1481195?r=wd", supercategory:"Общественно-научные предметы"},
-          {category:"Обществознание", name:"ВСЁ обществознание 8 класс для ВПР и ОГЭ с Равилем Кандинским | Умскул", link:"https://youtu.be/rF7vh97_wsc?si=L4uI3JFnXTSQkNBH", supercategory:"Общественно-научные предметы"},
-          {category:"Обществознание", name:"Все обществознание за 8 класс | Какие темы нужно знать для ОГЭ? (Rutube)", link:"https://rutube.ru/video/2d87a1e310ba3050351503fa36963c15/", supercategory:"Общественно-научные предметы"},
-          {category:"Обществознание", name:"Обществознание. 8 класс (плейлист Rutube)", link:"https://rutube.ru/plst/851472?r=wd", supercategory:"Общественно-научные предметы"},
-          {category:"География", name:"Плейлист География 8 класс", link:"https://www.youtube.com/playlist?list=PLrpAqXzEvTyybk8EgAzUS6r2Wg2My5cxm", supercategory:"Общественно-научные предметы"},
-          {category:"География", name:"ВСЯ ГЕОГРАФИЯ за 8 класс | ОГЭ География 2026 | Умскул (Rutube)", link:"https://rutube.ru/video/49a3ebc1badce0c2bf07d35b28161533/", supercategory:"Общественно-научные предметы"},
-          {category:"География", name:"География. 8 класс (плейлист Rutube)", link:"https://rutube.ru/plst/842265?r=wd", supercategory:"Общественно-научные предметы"},
-          {category:"Технология / Труд", name:"Плейлист Технология 8 класс (девочки)", link:"https://www.youtube.com/playlist?list=PLAUhrtAMVO-876bVscJKEMK9JJz8KUKTk", supercategory:"Искусство и технология"},
-          {category:"ИЗО", name:"Плейлист ИЗО 8 класс", link:"https://www.youtube.com/playlist?list=PLkssEhhF6L6O-NZukPmtoM7pFALcbMYEC", supercategory:"Искусство и технология"},
-          {category:"ИЗО", name:"Плейлист ИЗО 8 класс 1 (Rutube)", link:"https://rutube.ru/plst/839864?r=wd", supercategory:"Искусство и технология"},
-          {category:"ИЗО", name:"Плейлист ИЗО 8 класс 2 (Rutube)", link:"https://rutube.ru/plst/206150?r=wd", supercategory:"Искусство и технология"},
-          {category:"Музыка", name:"8 КЛАСС. ВИДЕО К УРОКАМ МУЗЫКИ (плейлист Rutube)", link:"https://rutube.ru/plst/54465?r=wd", supercategory:"Искусство и технология"},
-          {category:"ОБЖ", name:"Плейлист ОБЖ 8 класс", link:"https://www.youtube.com/playlist?list=PLAUhrtAMVO--XUxSneHcuRaG9lUJ362hK", supercategory:"Искусство и технология"},
-          {category:"ОБЖ", name:"Плейлист ОБЖ 8 класс (Rutube)", link:"https://rutube.ru/plst/25413?r=wd", supercategory:"Искусство и технология"},
-          {category:"Физкультура", name:"Плейлист Физкультура 8 класс", link:"https://www.youtube.com/playlist?list=PLAUhrtAMVO--mgTlCslxNxEVTb2s7AzGP", supercategory:"Искусство и технология"},
-          {category:"Дополнительно / Прочее", name:"Классика кино от Долина", link:"https://www.youtube.com/playlist?list=PL3H5xrrh2YApMTO2wFBEiyzKqM5IB0p5F", supercategory:"Дополнительно / Прочее"},
-          {category:"Дополнительно / Прочее", name:"Открытый урок с Быковым по литературе", link:"https://youtube.com/playlist?list=PLJQdy_SVymBP9L_48RZw6grzPAA7Ah3YA&si=6wtyDnoMi2JZIS5D", supercategory:"Дополнительно / Прочее"},
-          {category:"Дополнительно / Прочее", name:"Западная литература 20 века", link:"https://vk.com/music/playlist/-79876841_73511191_0c3f635c66a5881f22", supercategory:"Дополнительно / Прочее"},
-          {category:"Дополнительно / Прочее", name:"Мастерство публичной речи", link:"https://www.youtube.com/playlist?list=PLwuA0QpVldpaB6CTDfOteQd9bW3teR--H", supercategory:"Дополнительно / Прочее"},
-          {category:"Дополнительно / Прочее", name:"Кинематограф современности", link:"https://vk.com/wall-140536517_33986", supercategory:"Дополнительно / Прочее"},
-          {category:"Дополнительно / Прочее", name:"Набоков - лекции по русской литературе", link:"https://vk.com/music/playlist/-52526415_85403198_2ad2ca8193647845b1", supercategory:"Дополнительно / Прочее"},
-          {category:"Дополнительно / Прочее", name:"ВНЖ по учебе в Поругалии", link:"https://www.migrun.tech/ru/portugal/secondary-school", supercategory:"Дополнительно / Прочее"},
-          {category:"Дополнительно / Прочее", name:"Добровольный cоциальный год в Германии", link:"https://euni.ru/informatsiya/statji/rabota-i-karjera/fsj", supercategory:"Дополнительно / Прочее"},
-          {category:"Алгебра", name:"РЭШ: Алгебра", link:"https://resh.edu.ru/subject/16/8/", supercategory:"Математика и информатика"},
-          {category:"Английский язык", name:"РЭШ:  Английский язык", link:"https://resh.edu.ru/subject/11/8/", supercategory:"Русский язык и литература, английский язык"},
-          {category:"Биология", name:"РЭШ:  Биология", link:"https://resh.edu.ru/subject/5/8/", supercategory:"Естественно-научные предметы"},
-          {category:"География", name:"РЭШ:  География", link:"https://resh.edu.ru/subject/4/8/", supercategory:"Общественно-научные предметы"},
-          {category:"Геометрия", name:"РЭШ:  Геометрия", link:"https://resh.edu.ru/subject/17/8/", supercategory:"Математика и информатика"},
-          {category:"Информатика", name:"РЭШ:  Информатика", link:"https://resh.edu.ru/subject/19/8/", supercategory:"Математика и информатика"},
-          {category:"История", name:"РЭШ:  История", link:"https://resh.edu.ru/subject/3/8/", supercategory:"Общественно-научные предметы"},
-          {category:"Литература", name:"РЭШ:  Литература", link:"https://resh.edu.ru/subject/14/8/", supercategory:"Русский язык и литература, английский язык"},
-          {category:"Музыка", name:"РЭШ:  Музыка", link:"https://resh.edu.ru/subject/6/8/", supercategory:"Искусство и технология"},
-          {category:"Обществознание", name:"РЭШ:  Обществознание", link:"https://resh.edu.ru/subject/24/8/", supercategory:"Общественно-научные предметы"},
-          {category:"ОБЖ", name:"РЭШ:  ОБЖ", link:"https://resh.edu.ru/subject/23/8/", supercategory:"Искусство и технология"},
-          {category:"Русский язык", name:"РЭШ:  Русский язык", link:"https://resh.edu.ru/subject/13/8/", supercategory:"Русский язык и литература, английский язык"},
-          {category:"Технология / Труд", name:"РЭШ:  Технология", link:"https://resh.edu.ru/subject/50/8/", supercategory:"Искусство и технология"},
-          {category:"Физика", name:"РЭШ:  Физика", link:"https://resh.edu.ru/subject/28/8/", supercategory:"Естественно-научные предметы"},
-          {category:"Физкультура", name:"РЭШ:  Физкультура", link:"https://resh.edu.ru/subject/9/8/", supercategory:"Искусство и технология"},
-          {category:"Химия", name:"РЭШ:  Химия", link:"https://resh.edu.ru/subject/29/8/", supercategory:"Естественно-научные предметы"},
-          {category:"Ещё ресурсы", name:"Группа по семейному обучению (Telegram)", link:"https://t.me/family_education11", supercategory:"Ресурсы"},
-          {category:"Ещё ресурсы", name:"Вторая Группа по семейному обучению (Telegram)", link:"https://t.me/homescooling1", supercategory:"Ресурсы"},
-          {category:"Ещё ресурсы", name:"Программа для тренировки запоминания", link:"https://apps.ankiweb.net/", supercategory:"Ресурсы"},
-          {category:"Ещё ресурсы", name:"Каталог платформ и школ для промежуточной аттестации", link:"https://docs.google.com/spreadsheets/d/1EPnOrHBXIeoXKJNt97zsKEBJVAbvjwEqKFjzpLvc3Mo/edit?pli=1&gid=1569719132#gid=1569719132", supercategory:"Ресурсы"},
-          {category:"Основные ресурсы", name:"Сервис Моя школа (Госуслуги)", link:"https://www.gosuslugi.ru/myschool", supercategory:"Ресурсы"},
-          {category:"Основные ресурсы", name:"Учи Ру", link:"https://uchi.ru/", supercategory:"Ресурсы"},
-          {category:"Основные ресурсы", name:"ЯКласс — онлайн-тренажёр по 15 предметам, задания для ЕГЭ, ОГЭ, ВПР с автопроверкой и теорией", link:"https://www.yaklass.ru", supercategory:"Ресурсы"},
-          {category:"Основные ресурсы", name:"ИнтернетУрок — библиотека видеоуроков, конспектов и тестов по всем предметам", link:"https://interneturok.ru", supercategory:"Ресурсы"},
-          {category:"Основные ресурсы", name:"Фоксфорд", link:"https://foxford.ru", supercategory:"Ресурсы"},
-          // НОВЫЕ РЕСУРСЫ (Pomodoro + Tweek)
-          {category:"Основные ресурсы", name:"🍅 Pomodoro Трекер", link:"https://pomodoro-tracker.com/?lang=ru", supercategory:"Ресурсы"},
-          {category:"Основные ресурсы", name:"✅ Tweek — планировщик задач", link:"https://tweek.so/ru", supercategory:"Ресурсы"},
-          {category:"Ещё ресурсы", name:"Навигатор самостоятельной подготовки к ОГЭ — пошаговые рекомендации по каждому предмету от разработчиков экзамена", link:"https://fipi.ru/navigator-podgotovki/navigator-oge", supercategory:"Ресурсы"},
-          {category:"Основные ресурсы", name:"РЕШУ ЕГЭ/ОГЭ/ВПР (СдамГИА) — тренажёр с огромным банком заданий", link:"https://sdamgia.ru", supercategory:"Ресурсы"},
-          {category:"Основные ресурсы", name:"Инфоурок - огромное количество материалов, включая КИМ", link:"https://infourok.ru/", supercategory:"Ресурсы"},
-          {category:"Ещё ресурсы", name:"LearningApps упражнения и домашние задания", link:"https://learningapps.org", supercategory:"Ресурсы"},
-          {category:"Ещё ресурсы", name:"OnliSkill - видеоуроки с 5 по 11 класс", link:"https://www.youtube.com/@OnliSkill", supercategory:"Ресурсы"}
-        ];
+// ВЕСЬ КОД В ОДНОМ МЕСТЕ
+(function() {
+    const rawLinks = [
+        {category:"Математика (дополнительно)", name:"Карта математики", link:"https://ru.pinterest.com/pin/496944140146110856/", supercategory:"Математика и информатика"},
+        {category:"Математика (дополнительно)", name:"Как познать всю математику САМОМУ? (за 20 минут)", link:"https://youtu.be/X2Z2eJNEEos", supercategory:"Математика и информатика"},
+        {category:"Математика (дополнительно)", name:"ВСЯ АЛГЕБРА 7 КЛАССА ЗА 10 МИНУТ", link:"https://youtu.be/nn8Duo_bQY4", supercategory:"Математика и информатика"},
+        {category:"Математика (дополнительно)", name:"Комплексный канал о математике", link:"https://www.youtube.com/@MathEasy", supercategory:"Математика и информатика"},
+        {category:"Алгебра", name:"Рекомендованный учебник математики", link:"https://no.11klasov.net/4263-algebra-8-klass-uchebnik-v-3-chastyah-peterson-lg-i-dr.html", supercategory:"Математика и информатика"},
+        {category:"Математика (дополнительно)", name:"Вся Математика за 12 часов, с Нуля до Профиля ЕГЭ", link:"https://youtu.be/bOd_ecJon9s", supercategory:"Математика и информатика"},
+        {category:"Математика (дополнительно)", name:"Плейлист со школьной алгеброй", link:"https://youtube.com/playlist?list=PLnp1b0c7z98qMo0CEm36RVN8x3BuodrqJ&si=8WQO5QkL167k7yej", supercategory:"Математика и информатика"},
+        {category:"Математика (дополнительно)", name:"Плейлист \"Математика с 0 (Путь к ОГЭ)\"", link:"https://youtube.com/playlist?list=PLxv1GWnBLw5EftKHNoN2qjWH5MEVL79NI&si=UAPOrAB6r23gWOee", supercategory:"Математика и информатика"},
+        {category:"Математика (дополнительно)", name:"Введение в математику", link:"https://www.youtube.com/playlist?list=PLSvRPXojWOmSDZk16TrWogtNi5n6iqi72", supercategory:"Математика и информатика"},
+        {category:"Математика (дополнительно)", name:"Подготовка к ЕГЭ 2021 по физике и математике от МФТИ", link:"https://abitu.net/ege/3838137", supercategory:"Математика и информатика"},
+        {category:"Алгебра", name:"Алгебра 8 класс С НУЛЯ до ОГЭ по математике | Умскул", link:"https://youtu.be/CPYRPvTBuTA?si=X4CVIP8KYhcj2lfL", supercategory:"Математика и информатика"},
+        {category:"Алгебра", name:"Вся теория алгебры для ВПР 8 класса", link:"https://www.youtube.com/watch?v=A_y9cDeZM2Y", supercategory:"Математика и информатика"},
+        {category:"Алгебра", name:"Вся алгебра 8 класса | Умскул", link:"https://youtu.be/0vMnKTlmcls?si=KMOqHq6HG-gUN_IS", supercategory:"Математика и информатика"},
+        {category:"Алгебра", name:"Алгебра - 8 класс (плейлист)", link:"https://www.youtube.com/playlist?list=PLCRqj4jDCIYkk9CMV6wBQR16eHz_SRU1j", supercategory:"Математика и информатика"},
+        {category:"Геометрия", name:"Вся геометрия за 8 класс | Математика ОГЭ – Дядя Артем", link:"https://youtu.be/jXiUyBI8yOs?si=pnIdf7VWmAaUSU7X", supercategory:"Математика и информатика"},
+        {category:"Геометрия", name:"Вся Геометрия с Нуля за 50 минут, для Чайников", link:"https://youtu.be/WKZwvaeEds0?si=CvFgmz_gIQcNBKqv", supercategory:"Математика и информатика"},
+        {category:"Геометрия", name:"Геометрия - 8 класс. Плейлист", link:"https://youtube.com/playlist?list=PLeRoaPcjXF1ecF21g27Q7ZDfF8Gktvwf0&si=HdGOGqiXcSb2b_US", supercategory:"Математика и информатика"},
+        {category:"Вероятность и статистика", name:"Вероятность и статистика. 8 класс. Плейлист", link:"https://www.youtube.com/playlist?list=PLM5ldtp1CGmphTC2DOC4AX9v3a6GlLZHt", supercategory:"Математика и информатика"},
+        {category:"Вероятность и статистика", name:"Вся теория вероятностей для экзамена за 20 минут. ЕГЭ профильный, Базовый, ОГЭ", link:"https://youtu.be/wa9DPJJ80rY", supercategory:"Математика и информатика"},
+        {category:"Информатика", name:"Вся информатика 8 класса с нуля | Информатика ОГЭ Умскул", link:"https://youtu.be/94Ai8jNVRiY?si=JfV_rSkp3ZeewNlr", supercategory:"Математика и информатика"},
+        {category:"Информатика", name:"Информатика 8 класс. Плейлист", link:"https://www.youtube.com/playlist?list=PLvtJKssE5NrgKMB5Utz58w8FtIxOW5X7R", supercategory:"Математика и информатика"},
+        {category:"Геометрия", name:"ГЕОМЕТРИЯ - 8 класс (плейлист Rutube)", link:"https://rutube.ru/plst/610197/?r=wd", supercategory:"Математика и информатика"},
+        {category:"Алгебра", name:"АЛГЕБРА - 8 класс (плейлист Rutube)", link:"https://rutube.ru/plst/561723/", supercategory:"Математика и информатика"},
+        {category:"Алгебра", name:"ВПР по математике 8 класс за 45 минут (Rutube)", link:"https://rutube.ru/video/c7b5933a42c8fa01c14585cc88362101/", supercategory:"Математика и информатика"},
+        {category:"Вероятность и статистика", name:"Вероятность, статистика, графы. ВПР по математике 7-8 класс  (Rutube)", link:"https://rutube.ru/video/74faadd9084dc0fcb056ca144cebf411/", supercategory:"Математика и информатика"},
+        {category:"Вероятность и статистика", name:"8 класс. Вероятность и статистика (плейлист Rutube)", link:"https://rutube.ru/plst/647881/", supercategory:"Математика и информатика"},
+        {category:"Информатика", name:"ВПР-2026 по информатике (Rutube)", link:"https://rutube.ru/video/565250a4a009c8b7101de25276a76d6c/", supercategory:"Математика и информатика"},
+        {category:"Информатика", name:"Информатика 8 класс. Работаем по обновленным ФГОС (плейлист Rutube)", link:"https://rutube.ru/plst/536055/", supercategory:"Математика и информатика"},
+        {category:"Информатика", name:"Вся информатика 8 класса С НУЛЯ (Rutube)", link:"https://rutube.ru/video/53e8e7fe4b2e649b63acc60714b111dd/", supercategory:"Математика и информатика"},
+        {category:"Русский язык", name:"Весь русский язык за 8 класс за ОДИН урок | Умскул", link:"https://youtu.be/YStxafJlWS0?si=H1Qm1A0X053K2pNc", supercategory:"Русский язык и литература, английский язык"},
+        {category:"Английский язык", name:"Топовый обучающий канал (английский язык)", link:"https://www.youtube.com/@БЕСПЛАТНЫЙРЕПЕТИТОР-АНГЛИЙСКИЙ", supercategory:"Русский язык и литература, английский язык"},
+        {category:"Английский язык", name:"Топовый обучающий канал (английский язык, Rutube)", link:"https://rutube.ru/channel/23905073/", supercategory:"Русский язык и литература, английский язык"},
+        {category:"Английский язык", name:"Полный БЕСПЛАТНЫЙ КУРС АНГЛИЙСКОГО ЯЗЫКА (8 часов)", link:"https://youtu.be/s9Ik82fYb3Y", supercategory:"Русский язык и литература, английский язык"},
+        {category:"Английский язык", name:"Как я ВЫУЧИЛ БЫ английский, ЕСЛИ БЫ ЗАБЫЛ его: пошаговый план с нуля | Virginia Beowulf", link:"https://youtu.be/DetUFYaC9cQ", supercategory:"Русский язык и литература, английский язык"},
+        {category:"Английский язык", name:"Плейлист \"Английский язык\"", link:"https://www.youtube.com/playlist?list=PLho0jPYl5RAG1gH4_E26q5g6sRGl2Y3Kp", supercategory:"Русский язык и литература, английский язык"},
+        {category:"Английский язык", name:"Весь Английский язык за 8 класс за 30 минут", link:"https://youtu.be/xZkLAZMI9vI", supercategory:"Русский язык и литература, английский язык"},
+        {category:"Английский язык", name:"Плейлист Английский язык 8 класс", link:"https://www.youtube.com/playlist?list=PLrpAqXzEvTyzetkfhHCuavQdBFPcpUVyk", supercategory:"Русский язык и литература, английский язык"},
+        {category:"Английский язык", name:"ВПР Английский язык 8 класс (плейлист Rutube)", link:"https://rutube.ru/plst/914028/", supercategory:"Русский язык и литература, английский язык"},
+        {category:"Английский язык", name:"8 класс. Английский язык (плейлист Rutube)", link:"https://rutube.ru/plst/1210660?r=wd", supercategory:"Русский язык и литература, английский язык"},
+        {category:"Английский язык", name:"Лучшие методы изучения английского", link:"https://vk.com/wall-36147615_830607", supercategory:"Русский язык и литература, английский язык"},
+        {category:"Русский язык", name:"Плейлист Русский язык", link:"https://youtube.com/playlist?list=PLo8q60XhDXRSdVsJ-MppXdxVyKZCX1lm1&si=YNzUWbR8dQuAjReD", supercategory:"Русский язык и литература, английский язык"},
+        {category:"Русский язык", name:"Весь русский язык за 8 класс за ОДИН урок | Умскул (плейлист Rutube)", link:"https://rutube.ru/video/b47017d27b5a063f10edc0292969d707/", supercategory:"Русский язык и литература, английский язык"},
+        {category:"Русский язык", name:"Русский язык. 8 класс  (плейлист Rutube)", link:"https://rutube.ru/plst/1470069?r=wd", supercategory:"Русский язык и литература, английский язык"},
+        {category:"Литература", name:"Спидран русской литературы", link:"https://youtu.be/P1OD_teLcdY", supercategory:"Русский язык и литература, английский язык"},
+        {category:"Литература", name:"Литература 8 класс (плейлист)", link:"https://youtube.com/playlist?list=PLrpAqXzEvTyyzTh9bQQ3hdAZZnfW2YfVL&si=I0y_lzjbaxj9EZfm", supercategory:"Русский язык и литература, английский язык"},
+        {category:"Литература", name:"Литература 8 класс (плейлист Rutube)", link:"https://rutube.ru/plst/332929?r=wd", supercategory:"Русский язык и литература, английский язык"},
+        {category:"Литература", name:"Разбор РЕАЛЬНЫХ ВАРИАНТОВ ВПР по литературе 2026 для 8 класса (Rutube)", link:"https://rutube.ru/video/9f8bf06037a6a87767eb364c5abc1e60/", supercategory:"Русский язык и литература, английский язык"},
+        {category:"Физика", name:"Школьная Программа 8 класс по Физике за 27 Минут!", link:"https://youtu.be/6Y3gikcjuV0?si=LDG1jvUdddlsIpTr", supercategory:"Естественно-научные предметы"},
+        {category:"Физика", name:"ВСЯ ФИЗИКА за 17 минут! Ты поймёшь ВСЁ", link:"https://www.youtube.com/watch?v=InVqXPQzWqY", supercategory:"Естественно-научные предметы"},
+        {category:"Физика", name:"Вся Физика 8 Класс за 50 Минут", link:"https://youtu.be/u_L9m-J9Ue8?si=YFH3ORxZUjeuEJ3b", supercategory:"Естественно-научные предметы"},
+        {category:"Физика", name:"Плейлист: Физика 8 класс", link:"https://www.youtube.com/playlist?list=PLvtJKssE5NrgKwiO2c5L7LeavpLaNpaau", supercategory:"Естественно-научные предметы"},
+        {category:"Физика", name:"Физика 8 класс (плейлист Rutube)", link:"https://rutube.ru/plst/277644?r=wd", supercategory:"Естественно-научные предметы"},
+        {category:"Физика", name:"Вся физика 8 КЛАССА за 1 час для ОГЭ по Физике | Умскул (Rutube)", link:"https://rutube.ru/video/635138b054e5188cb2e0112a522aeea1/", supercategory:"Естественно-научные предметы"},
+        {category:"Химия", name:"Вспомнить все: Химия 8 класс за один урок I ОГЭ по Химии | Умскул", link:"https://youtu.be/dzlyC3PLD74?si=jTHKyeS4BD1RDOok", supercategory:"Естественно-научные предметы"},
+        {category:"Химия", name:"Химия 8 класс (плейлист)", link:"https://www.youtube.com/playlist?list=PLrpAqXzEvTyxSgGS5qjm-hjuUAmUEQ1Er", supercategory:"Естественно-научные предметы"},
+        {category:"Химия", name:"Плейлист: Химия 8 класс", link:"https://youtube.com/playlist?list=PL92ykBQNNakGSVVG9ign5cT3xHo7gkvt2&si=zse3y2kn5g6f7CaE", supercategory:"Естественно-научные предметы"},
+        {category:"Химия", name:"ВСЯ химия 8-го класса за 2 ЧАСА (Rutube)", link:"https://rutube.ru/video/331ee8b8531eb3e9bd048756e0dccb4a/", supercategory:"Естественно-научные предметы"},
+        {category:"Химия", name:"Химия 8 класс (плейлист Rutube)", link:"https://rutube.ru/plst/304416?r=wd", supercategory:"Естественно-научные предметы"},
+        {category:"Биология", name:"ВСЯ биология 8 класса С НУЛЯ: подробный разбор I Онлайн урок по биологии I Умскул", link:"https://youtu.be/CAxg65ezEkY?si=Jt-7V5wt5XWl3nPc", supercategory:"Естественно-научные предметы"},
+        {category:"Биология", name:"Изучить биологию за 360 секунд", link:"https://www.youtube.com/watch?v=5pP_O94GdW4", supercategory:"Естественно-научные предметы"},
+        {category:"Биология", name:"Плейлист Биология", link:"https://www.youtube.com/playlist?list=PLrpAqXzEvTyzWdZEoZrOvm0cZEcOUt8Td", supercategory:"Естественно-научные предметы"},
+        {category:"Биология", name:"Биология 8 класс (плейлист Rutube)", link:"https://rutube.ru/plst/331816?r=wd", supercategory:"Естественно-научные предметы"},
+        {category:"Биология", name:"ВСЯ биология 8 класса: подробный разбор I ВПР по биологии I Умскул (Rutube)", link:"https://rutube.ru/video/c84c53f9602ec2a705b46821ac5539af/", supercategory:"Естественно-научные предметы"},
+        {category:"Всеобщая история", name:"Решаю ВПР / МЦКО по истории за 8 класс: подробный разбор 2026 | Онлайн школа «Умскул»", link:"https://youtu.be/9rGYazUenBM?si=knWK1h5F76spz_4C", supercategory:"Общественно-научные предметы"},
+        {category:"Всеобщая история", name:"Вся история 8 класса за 1 час: разбор событий I История ОГЭ | Умскул", link:"https://youtu.be/8GdHA5UFJhs?si=VGmpKiPtzuk6TW_w", supercategory:"Общественно-научные предметы"},
+        {category:"Всеобщая история", name:"Всеобщая История 8 Класс, Мединский (плейлист)", link:"https://www.youtube.com/playlist?list=PLDPC6dfN5lN8jxYS4ohSOoqx7ciJl-Fum", supercategory:"Общественно-научные предметы"},
+        {category:"Всеобщая история", name:"8 класс - Всеобщая история (плейлист Rutube)", link:"https://rutube.ru/plst/850800?r=wd", supercategory:"Общественно-научные предметы"},
+        {category:"Всеобщая история", name:"ПОЛНАЯ ИСТОРИЯ ЕВРОПЫ В XIX-НАЧАЛЕ XX ВВ. | ВСЕМИРНАЯ ИСТОРИЯ, 8 КЛАСС (Rutube)", link:"https://rutube.ru/video/a7e5ca2e1cc5b104ef856bd3770bffed/", supercategory:"Общественно-научные предметы"},
+        {category:"История России", name:"История России 8 класс. Мединский 2025 (плейлист)", link:"https://www.youtube.com/playlist?list=PLDPC6dfN5lN_lWcUzQLrxUHktmat8193l", supercategory:"Общественно-научные предметы"},
+        {category:"История России", name:"Вся история 8 класса за 1 час: разбор событий I История ОГЭ | Умскул", link:"https://youtu.be/8GdHA5UFJhs?si=VXstjy6n2Sf-_on0", supercategory:"Общественно-научные предметы"},
+        {category:"История России", name:"8 класс - История России (плейлист Rutube)", link:"https://rutube.ru/plst/849536?r=wd", supercategory:"Общественно-научные предметы"},
+        {category:"История России", name:"История России 8 класс Мединский Торкунов краткий пересказ  (плейлист Rutube)", link:"https://rutube.ru/plst/1481195?r=wd", supercategory:"Общественно-научные предметы"},
+        {category:"Обществознание", name:"ВСЁ обществознание 8 класс для ВПР и ОГЭ с Равилем Кандинским | Умскул", link:"https://youtu.be/rF7vh97_wsc?si=L4uI3JFnXTSQkNBH", supercategory:"Общественно-научные предметы"},
+        {category:"Обществознание", name:"Все обществознание за 8 класс | Какие темы нужно знать для ОГЭ? (Rutube)", link:"https://rutube.ru/video/2d87a1e310ba3050351503fa36963c15/", supercategory:"Общественно-научные предметы"},
+        {category:"Обществознание", name:"Обществознание. 8 класс (плейлист Rutube)", link:"https://rutube.ru/plst/851472?r=wd", supercategory:"Общественно-научные предметы"},
+        {category:"География", name:"Плейлист География 8 класс", link:"https://www.youtube.com/playlist?list=PLrpAqXzEvTyybk8EgAzUS6r2Wg2My5cxm", supercategory:"Общественно-научные предметы"},
+        {category:"География", name:"ВСЯ ГЕОГРАФИЯ за 8 класс | ОГЭ География 2026 | Умскул (Rutube)", link:"https://rutube.ru/video/49a3ebc1badce0c2bf07d35b28161533/", supercategory:"Общественно-научные предметы"},
+        {category:"География", name:"География. 8 класс (плейлист Rutube)", link:"https://rutube.ru/plst/842265?r=wd", supercategory:"Общественно-научные предметы"},
+        {category:"Технология / Труд", name:"Плейлист Технология 8 класс (девочки)", link:"https://www.youtube.com/playlist?list=PLAUhrtAMVO-876bVscJKEMK9JJz8KUKTk", supercategory:"Искусство и технология"},
+        {category:"ИЗО", name:"Плейлист ИЗО 8 класс", link:"https://www.youtube.com/playlist?list=PLkssEhhF6L6O-NZukPmtoM7pFALcbMYEC", supercategory:"Искусство и технология"},
+        {category:"ИЗО", name:"Плейлист ИЗО 8 класс 1 (Rutube)", link:"https://rutube.ru/plst/839864?r=wd", supercategory:"Искусство и технология"},
+        {category:"ИЗО", name:"Плейлист ИЗО 8 класс 2 (Rutube)", link:"https://rutube.ru/plst/206150?r=wd", supercategory:"Искусство и технология"},
+        {category:"Музыка", name:"8 КЛАСС. ВИДЕО К УРОКАМ МУЗЫКИ (плейлист Rutube)", link:"https://rutube.ru/plst/54465?r=wd", supercategory:"Искусство и технология"},
+        {category:"ОБЖ", name:"Плейлист ОБЖ 8 класс", link:"https://www.youtube.com/playlist?list=PLAUhrtAMVO--XUxSneHcuRaG9lUJ362hK", supercategory:"Искусство и технология"},
+        {category:"ОБЖ", name:"Плейлист ОБЖ 8 класс (Rutube)", link:"https://rutube.ru/plst/25413?r=wd", supercategory:"Искусство и технология"},
+        {category:"Физкультура", name:"Плейлист Физкультура 8 класс", link:"https://www.youtube.com/playlist?list=PLAUhrtAMVO--mgTlCslxNxEVTb2s7AzGP", supercategory:"Искусство и технология"},
+        {category:"Дополнительно / Прочее", name:"Классика кино от Долина", link:"https://www.youtube.com/playlist?list=PL3H5xrrh2YApMTO2wFBEiyzKqM5IB0p5F", supercategory:"Дополнительно / Прочее"},
+        {category:"Дополнительно / Прочее", name:"Открытый урок с Быковым по литературе", link:"https://youtube.com/playlist?list=PLJQdy_SVymBP9L_48RZw6grzPAA7Ah3YA&si=6wtyDnoMi2JZIS5D", supercategory:"Дополнительно / Прочее"},
+        {category:"Дополнительно / Прочее", name:"Западная литература 20 века", link:"https://vk.com/music/playlist/-79876841_73511191_0c3f635c66a5881f22", supercategory:"Дополнительно / Прочее"},
+        {category:"Дополнительно / Прочее", name:"Мастерство публичной речи", link:"https://www.youtube.com/playlist?list=PLwuA0QpVldpaB6CTDfOteQd9bW3teR--H", supercategory:"Дополнительно / Прочее"},
+        {category:"Дополнительно / Прочее", name:"Кинематограф современности", link:"https://vk.com/wall-140536517_33986", supercategory:"Дополнительно / Прочее"},
+        {category:"Дополнительно / Прочее", name:"Набоков - лекции по русской литературе", link:"https://vk.com/music/playlist/-52526415_85403198_2ad2ca8193647845b1", supercategory:"Дополнительно / Прочее"},
+        {category:"Дополнительно / Прочее", name:"ВНЖ по учебе в Поругалии", link:"https://www.migrun.tech/ru/portugal/secondary-school", supercategory:"Дополнительно / Прочее"},
+        {category:"Дополнительно / Прочее", name:"Добровольный cоциальный год в Германии", link:"https://euni.ru/informatsiya/statji/rabota-i-karjera/fsj", supercategory:"Дополнительно / Прочее"},
+        {category:"Ещё ресурсы", name:"Группа по семейному обучению (Telegram)", link:"https://t.me/family_education11", supercategory:"Ресурсы"},
+        {category:"Ещё ресурсы", name:"Вторая Группа по семейному обучению (Telegram)", link:"https://t.me/homescooling1", supercategory:"Ресурсы"},
+        {category:"Ещё ресурсы", name:"Программа для тренировки запоминания", link:"https://apps.ankiweb.net/", supercategory:"Ресурсы"},
+        {category:"Ещё ресурсы", name:"Каталог платформ и школ для промежуточной аттестации", link:"https://docs.google.com/spreadsheets/d/1EPnOrHBXIeoXKJNt97zsKEBJVAbvjwEqKFjzpLvc3Mo/edit?pli=1&gid=1569719132#gid=1569719132", supercategory:"Ресурсы"},
+        {category:"Основные ресурсы", name:"Каталог БЦОК", link:"https://lesson.edu.ru/", supercategory:"Ресурсы"},
+        {category:"Основные ресурсы", name:"Сервис Моя школа (Госуслуги)", link:"https://www.gosuslugi.ru/myschool", supercategory:"Ресурсы"},
+        {category:"Основные ресурсы", name:"Учи Ру", link:"https://uchi.ru/", supercategory:"Ресурсы"},
+        {category:"Основные ресурсы", name:"ЯКласс — онлайн-тренажёр по 15 предметам, задания для ЕГЭ, ОГЭ, ВПР с автопроверкой и теорией", link:"https://www.yaklass.ru", supercategory:"Ресурсы"},
+        {category:"Основные ресурсы", name:"ИнтернетУрок — библиотека видеоуроков, конспектов и тестов по всем предметам", link:"https://interneturok.ru", supercategory:"Ресурсы"},
+        {category:"Основные ресурсы", name:"Фоксфорд", link:"https://foxford.ru", supercategory:"Ресурсы"},
+        {category:"Основные ресурсы", name:"🍅 Pomodoro Трекер", link:"https://pomodoro-tracker.com/?lang=ru", supercategory:"Ресурсы"},
+        {category:"Основные ресурсы", name:"✅ Tweek — планировщик задач", link:"https://tweek.so/ru", supercategory:"Ресурсы"},
+        {category:"Ещё ресурсы", name:"Навигатор самостоятельной подготовки к ОГЭ — пошаговые рекомендации по каждому предмету от разработчиков экзамена", link:"https://fipi.ru/navigator-podgotovki/navigator-oge", supercategory:"Ресурсы"},
+        {category:"Основные ресурсы", name:"РЕШУ ЕГЭ/ОГЭ/ВПР (СдамГИА) — тренажёр с огромным банком заданий", link:"https://sdamgia.ru", supercategory:"Ресурсы"},
+        {category:"Основные ресурсы", name:"Инфоурок - огромное количество материалов, включая КИМ", link:"https://infourok.ru/", supercategory:"Ресурсы"},
+        {category:"Ещё ресурсы", name:"LearningApps упражнения и домашние задания", link:"https://learningapps.org", supercategory:"Ресурсы"},
+        {category:"Ещё ресурсы", name:"OnliSkill - видеоуроки с 5 по 11 класс", link:"https://www.youtube.com/@OnliSkill", supercategory:"Ресурсы"}
+    ];
 
-        // Слияние истории в "История России"
-        for (let i = 0; i < rawLinks.length; i++) {
-            if (rawLinks[i].category === "История") rawLinks[i].category = "История России";
+    // Объединяем "История" в "История России"
+    for (let i = 0; i < rawLinks.length; i++) {
+        if (rawLinks[i].category === "История") rawLinks[i].category = "История России";
+    }
+
+    const getIcon = (link) => {
+        if (link.includes('youtu.be') || link.includes('youtube.com')) return '🎬';
+        if (link.includes('rutube.ru')) return '▶️';
+        if (link.includes('vk.com')) return '📘';
+        if (link.includes('telegram')) return '📱';
+        if (link.includes('pinterest')) return '📌';
+        if (link.includes('pomodoro')) return '🍅';
+        if (link.includes('tweek')) return '✅';
+        return '🔗';
+    };
+
+    const getPriority = (link) => {
+        if (link.includes('youtu.be') || link.includes('youtube.com')) return 1;
+        return 2;
+    };
+
+    // Группировка
+    const groups = new Map();
+    for (const item of rawLinks) {
+        const superCat = item.supercategory.trim();
+        const subject = item.category.trim();
+        if (!groups.has(superCat)) groups.set(superCat, new Map());
+        const subMap = groups.get(superCat);
+        if (!subMap.has(subject)) subMap.set(subject, []);
+        subMap.get(subject).push(item);
+    }
+    for (const subMap of groups.values()) {
+        for (const items of subMap.values()) {
+            items.sort((a, b) => getPriority(a.link) - getPriority(b.link));
         }
+    }
 
-        // Утилиты
-        const getIcon = (link) => {
-            if (link.includes('youtu.be') || link.includes('youtube.com')) return '🎬';
-            if (link.includes('rutube.ru')) return '▶️';
-            if (link.includes('vk.com')) return '📘';
-            if (link.includes('telegram')) return '📱';
-            if (link.includes('resh.edu')) return '🏛️';
-            if (link.includes('pinterest')) return '📌';
-            if (link.includes('pomodoro')) return '🍅';
-            if (link.includes('tweek')) return '✅';
-            return '🔗';
-        };
-        const getPriority = (link) => {
-            if (link.includes('resh.edu.ru')) return 1;
-            if (link.includes('youtu.be') || link.includes('youtube.com')) return 2;
-            return 3;
-        };
+    // Избранное
+    let favorites = new Set();
+    try {
+        const saved = localStorage.getItem('favorites_8class');
+        if (saved) favorites = new Set(JSON.parse(saved));
+    } catch(e) {}
+    function saveFavorites() {
+        localStorage.setItem('favorites_8class', JSON.stringify([...favorites]));
+    }
+    function isFavorite(link) { return favorites.has(link); }
+    function toggleFavorite(link) {
+        if (favorites.has(link)) favorites.delete(link);
+        else favorites.add(link);
+        saveFavorites();
+    }
 
-        // Группировка
-        const groups = new Map();
-        for (const item of rawLinks) {
-            const superCat = item.supercategory.trim();
-            const subject = item.category.trim();
-            if (!groups.has(superCat)) groups.set(superCat, new Map());
-            const subMap = groups.get(superCat);
-            if (!subMap.has(subject)) subMap.set(subject, []);
-            subMap.get(subject).push(item);
-        }
-        for (const subMap of groups.values()) {
-            for (const items of subMap.values()) {
-                items.sort((a, b) => getPriority(a.link) - getPriority(b.link));
-            }
-        }
+    let showOnlyFavorites = false;
+    let currentSearchQuery = "";
 
-        // Работа с избранным (localStorage)
-        let favorites = new Set();
-        try {
-            const saved = localStorage.getItem('favorites_8class');
-            if (saved) favorites = new Set(JSON.parse(saved));
-        } catch(e) {}
-        function saveFavorites() {
-            localStorage.setItem('favorites_8class', JSON.stringify([...favorites]));
-        }
-        function isFavorite(link) { return favorites.has(link); }
-        function toggleFavorite(link) {
-            if (favorites.has(link)) favorites.delete(link);
-            else favorites.add(link);
-            saveFavorites();
-        }
+    function getSubjectIcon(subject) {
+        if (subject.includes('Математика')) return '📐';
+        if (subject.includes('Алгебра')) return '📐';
+        if (subject.includes('Геометрия')) return '📏';
+        if (subject.includes('Русский')) return '📝';
+        if (subject.includes('Английский')) return '🇬🇧';
+        if (subject.includes('Литература')) return '📖';
+        if (subject.includes('Физика')) return '⚡';
+        if (subject.includes('Химия')) return '🧪';
+        if (subject.includes('Биология')) return '🧬';
+        if (subject.includes('История России')) return '🏛️';
+        if (subject.includes('Всеобщая история')) return '🌍';
+        if (subject.includes('Обществознание')) return '⚖️';
+        if (subject.includes('География')) return '🌍';
+        if (subject.includes('Информатика')) return '💻';
+        if (subject.includes('Технология')) return '🔧';
+        if (subject.includes('ИЗО')) return '🎨';
+        if (subject.includes('Музыка')) return '🎵';
+        if (subject.includes('ОБЖ')) return '🛡️';
+        if (subject.includes('Физкультура')) return '⚽';
+        if (subject.includes('Вероятность')) return '📊';
+        return '📖';
+    }
 
-        // Состояние: режим показа только избранного
-        let showOnlyFavorites = false;
-        let currentSearchQuery = "";
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
 
-        // Функция отрисовки с фильтрацией
-        function renderApp() {
-            const app = document.getElementById('app');
-            app.innerHTML = '';
+    function createAccordion(title, items, iconEmoji) {
+        const accordion = document.createElement('div');
+        accordion.className = 'accordion-item';
+        
+        const header = document.createElement('div');
+        header.className = 'accordion-header';
+        header.innerHTML = `<div class="header-left"><span class="header-icon">${iconEmoji}</span><span>${escapeHtml(title)}</span></div><span class="chevron">▼</span>`;
+        
+        const content = document.createElement('div');
+        content.className = 'accordion-content';
+        
+        const container = document.createElement('div');
+        container.className = 'links-container';
+        
+        for (const linkItem of items) {
+            let displayName = linkItem.name.replace(/🔴 ▶️|▶️/g, '').trim();
             
-            // Фильтруем группы: показываем только те предметы, в которых есть хоть одна ссылка, подходящая под фильтр
-            const filteredGroups = new Map();
-            for (const [superCat, subMap] of groups) {
-                const newSubMap = new Map();
-                for (const [subject, items] of subMap) {
-                    let filteredItems = items.filter(item => {
-                        const matchesSearch = currentSearchQuery === "" || item.name.toLowerCase().includes(currentSearchQuery.toLowerCase());
-                        const matchesFavorite = !showOnlyFavorites || favorites.has(item.link);
-                        return matchesSearch && matchesFavorite;
-                    });
-                    if (filteredItems.length) newSubMap.set(subject, filteredItems);
-                }
-                if (newSubMap.size) filteredGroups.set(superCat, newSubMap);
-            }
+            const card = document.createElement('a');
+            card.className = 'link-card';
+            if (isFavorite(linkItem.link)) card.classList.add('favorited');
+            card.href = linkItem.link;
+            card.target = '_blank';
+            card.rel = 'noopener noreferrer';
             
-            const resourcesMap = filteredGroups.get('Ресурсы');
-            if (resourcesMap) {
-                const mainRes = resourcesMap.get('Основные ресурсы');
-                if (mainRes?.length) app.appendChild(createAccordion('Основные ресурсы', mainRes, '📚'));
-                const extraRes = resourcesMap.get('Ещё ресурсы');
-                if (extraRes?.length) app.appendChild(createAccordion('Ещё ресурсы', extraRes, '🔧'));
-                for (const [subj, items] of resourcesMap) {
-                    if (subj !== 'Основные ресурсы' && subj !== 'Ещё ресурсы' && items.length)
-                        app.appendChild(createAccordion(subj, items, '📎'));
-                }
-            }
-            const extraSuper = 'Дополнительно / Прочее';
-            const mainSuper = Array.from(filteredGroups.keys()).filter(k => k !== 'Ресурсы' && k !== extraSuper).sort();
-            for (const superCat of mainSuper) {
-                const subMap = filteredGroups.get(superCat);
-                if (!subMap) continue;
-                const subjects = Array.from(subMap.keys()).sort();
-                for (const subject of subjects) {
-                    const items = subMap.get(subject);
-                    if (!items.length) continue;
-                    let icon = '📖';
-                    if (subject.includes('Математика')) icon = '📐';
-                    else if (subject.includes('Алгебра')) icon = '📐';
-                    else if (subject.includes('Геометрия')) icon = '📏';
-                    else if (subject.includes('Русский')) icon = '📝';
-                    else if (subject.includes('Английский')) icon = '🇬🇧';
-                    else if (subject.includes('Литература')) icon = '📖';
-                    else if (subject.includes('Физика')) icon = '⚡';
-                    else if (subject.includes('Химия')) icon = '🧪';
-                    else if (subject.includes('Биология')) icon = '🧬';
-                    else if (subject.includes('История России')) icon = '🏛️';
-                    else if (subject.includes('Всеобщая история')) icon = '🌍';
-                    else if (subject.includes('Обществознание')) icon = '⚖️';
-                    else if (subject.includes('География')) icon = '🌍';
-                    else if (subject.includes('Информатика')) icon = '💻';
-                    else if (subject.includes('Технология')) icon = '🔧';
-                    else if (subject.includes('ИЗО')) icon = '🎨';
-                    else if (subject.includes('Музыка')) icon = '🎵';
-                    else if (subject.includes('ОБЖ')) icon = '🛡️';
-                    else if (subject.includes('Физкультура')) icon = '⚽';
-                    app.appendChild(createAccordion(subject, items, icon));
-                }
-            }
-            const extraMap = filteredGroups.get(extraSuper);
-            if (extraMap) {
-                for (const [subject, items] of extraMap) {
-                    if (items.length) app.appendChild(createAccordion(subject, items, '🎭'));
-                }
-            }
-            if (app.children.length === 0) {
-                const emptyDiv = document.createElement('div');
-                emptyDiv.className = 'empty-message';
-                emptyDiv.innerText = showOnlyFavorites ? "⭐ Нет сохранённых ссылок. Добавьте в избранное!" : "🔍 Ничего не найдено. Попробуйте другой запрос.";
-                app.appendChild(emptyDiv);
-            }
+            const iconDiv = document.createElement('div');
+            iconDiv.className = 'platform-icon';
+            iconDiv.textContent = getIcon(linkItem.link);
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'card-content';
+            
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'card-title';
+            titleDiv.textContent = displayName;
+            
+            const metaDiv = document.createElement('div');
+            metaDiv.className = 'card-meta';
+            const badge = document.createElement('span');
+            badge.className = 'badge-cat';
+            badge.textContent = linkItem.category;
+            metaDiv.appendChild(badge);
+            
+            contentDiv.appendChild(titleDiv);
+            contentDiv.appendChild(metaDiv);
+            
+            card.appendChild(iconDiv);
+            card.appendChild(contentDiv);
+            
+            const starBtn = document.createElement('button');
+            starBtn.className = 'favorite-star';
+            starBtn.innerHTML = isFavorite(linkItem.link) ? '⭐' : '☆';
+            if (isFavorite(linkItem.link)) starBtn.classList.add('active-star');
+            starBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleFavorite(linkItem.link);
+                renderApp();
+            });
+            card.appendChild(starBtn);
+            container.appendChild(card);
         }
         
-        function createAccordion(title, items, iconEmoji) {
-            const accordion = document.createElement('div');
-            accordion.className = 'accordion-item';
-            const header = document.createElement('div');
-            header.className = 'accordion-header';
-            header.innerHTML = `<div class="header-left"><span class="header-icon">${iconEmoji}</span><span>${escapeHtml(title)}</span></div><span class="chevron">▼</span>`;
-            const content = document.createElement('div');
-            content.className = 'accordion-content';
-            const container = document.createElement('div');
-            container.className = 'links-container';
-            for (const linkItem of items) {
-                let displayName = linkItem.name.replace(/🔴 ▶️|▶️/g, '').trim();
-                if (linkItem.link.includes('resh.edu.ru') && !displayName.includes('РЭШ')) displayName = `🏫 ${displayName}`;
-                const card = document.createElement('a');
-                card.className = 'link-card';
-                if (isFavorite(linkItem.link)) card.classList.add('favorited');
-                card.href = linkItem.link;
-                card.target = '_blank';
-                card.rel = 'noopener noreferrer';
-                const iconDiv = document.createElement('div');
-                iconDiv.className = 'platform-icon';
-                iconDiv.textContent = getIcon(linkItem.link);
-                const contentDiv = document.createElement('div');
-                contentDiv.className = 'card-content';
-                const titleDiv = document.createElement('div');
-                titleDiv.className = 'card-title';
-                titleDiv.textContent = displayName;
-                const metaDiv = document.createElement('div');
-                metaDiv.className = 'card-meta';
-                const badge = document.createElement('span');
-                badge.className = 'badge-cat';
-                if (linkItem.link.includes('resh.edu.ru')) badge.classList.add('resh-badge');
-                badge.textContent = linkItem.category;
-                metaDiv.appendChild(badge);
-                if (linkItem.link.includes('resh.edu.ru')) {
-                    const reshLabel = document.createElement('span');
-                    reshLabel.className = 'badge-cat';
-                    reshLabel.style.background = '#3b82f640';
-                    reshLabel.textContent = 'РЭШ';
-                    metaDiv.appendChild(reshLabel);
-                }
-                contentDiv.appendChild(titleDiv);
-                contentDiv.appendChild(metaDiv);
-                card.appendChild(iconDiv);
-                card.appendChild(contentDiv);
-                // Звездочка избранного (отдельная кнопка, чтобы не мешала переходу)
-                const starBtn = document.createElement('button');
-                starBtn.className = 'favorite-star';
-                starBtn.innerHTML = isFavorite(linkItem.link) ? '⭐' : '☆';
-                if (isFavorite(linkItem.link)) starBtn.classList.add('active-star');
-                starBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    toggleFavorite(linkItem.link);
-                    renderApp(); // полный ререндер для обновления звезд и режима избранного
+        content.appendChild(container);
+        accordion.appendChild(header);
+        accordion.appendChild(content);
+        
+        header.addEventListener('click', function() {
+            const isOpen = content.classList.contains('show');
+            content.classList.toggle('show');
+            header.classList.toggle('open');
+        });
+        
+        return accordion;
+    }
+
+    function renderApp() {
+        const app = document.getElementById('app');
+        app.innerHTML = '';
+        
+        // Фильтрация
+        const filteredGroups = new Map();
+        for (const [superCat, subMap] of groups) {
+            const newSubMap = new Map();
+            for (const [subject, items] of subMap) {
+                let filteredItems = items.filter(function(item) {
+                    const matchesSearch = currentSearchQuery === "" || item.name.toLowerCase().includes(currentSearchQuery.toLowerCase());
+                    const matchesFavorite = !showOnlyFavorites || favorites.has(item.link);
+                    return matchesSearch && matchesFavorite;
                 });
-                card.appendChild(starBtn);
-                container.appendChild(card);
+                if (filteredItems.length) newSubMap.set(subject, filteredItems);
             }
-            content.appendChild(container);
-            accordion.appendChild(header);
-            accordion.appendChild(content);
-            header.addEventListener('click', () => {
-                const isOpen = content.classList.contains('show');
-                content.classList.toggle('show');
-                header.classList.toggle('open');
-            });
-            return accordion;
+            if (newSubMap.size) filteredGroups.set(superCat, newSubMap);
         }
         
-        function escapeHtml(str) {
-            return str.replace(/[&<>]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
-            });
+        // 1. Ресурсы
+        const resourcesMap = filteredGroups.get('Ресурсы');
+        if (resourcesMap) {
+            const mainRes = resourcesMap.get('Основные ресурсы');
+            if (mainRes && mainRes.length) app.appendChild(createAccordion('Основные ресурсы', mainRes, '📚'));
+            const extraRes = resourcesMap.get('Ещё ресурсы');
+            if (extraRes && extraRes.length) app.appendChild(createAccordion('Ещё ресурсы', extraRes, '🔧'));
+            for (const [subj, items] of resourcesMap) {
+                if (subj !== 'Основные ресурсы' && subj !== 'Ещё ресурсы' && items.length) {
+                    app.appendChild(createAccordion(subj, items, '📎'));
+                }
+            }
         }
+
+        // 2. Приоритетные предметы
+        const prioritySubjects = ['География', 'Обществознание', 'Геометрия', 'Вероятность и статистика', 'Алгебра', 'Физика', 'Биология'];
+        const prioritySuperCats = ['Общественно-научные предметы', 'Математика и информатика', 'Естественно-научные предметы'];
         
-        // Инициализация событий поиска и кнопки избранного
-        const searchInput = document.getElementById('searchInput');
-        const favBtn = document.getElementById('favoritesModeBtn');
-        searchInput.addEventListener('input', (e) => {
-            currentSearchQuery = e.target.value;
-            renderApp();
+        const priorityItems = [];
+        for (const superCat of prioritySuperCats) {
+            const subMap = filteredGroups.get(superCat);
+            if (!subMap) continue;
+            for (const [subject, items] of subMap) {
+                if (prioritySubjects.indexOf(subject) !== -1 && items.length) {
+                    priorityItems.push({ subject: subject, items: items, superCat: superCat });
+                }
+            }
+        }
+        priorityItems.sort(function(a, b) {
+            return prioritySubjects.indexOf(a.subject) - prioritySubjects.indexOf(b.subject);
         });
-        favBtn.addEventListener('click', () => {
-            showOnlyFavorites = !showOnlyFavorites;
-            if (showOnlyFavorites) favBtn.classList.add('active');
-            else favBtn.classList.remove('active');
-            renderApp();
-        });
-        if (showOnlyFavorites) favBtn.classList.add('active');
+        for (const item of priorityItems) {
+            const icon = getSubjectIcon(item.subject);
+            app.appendChild(createAccordion(item.subject, item.items, icon));
+        }
+
+        // 3. Все остальные
+        const extraSuper = 'Дополнительно / Прочее';
+        const allSuperCats = Array.from(filteredGroups.keys()).filter(function(k) {
+            return k !== 'Ресурсы' && k !== extraSuper;
+        }).sort();
+        
+        for (const superCat of allSuperCats) {
+            const subMap = filteredGroups.get(superCat);
+            if (!subMap) continue;
+            const subjects = Array.from(subMap.keys()).sort();
+            for (const subject of subjects) {
+                const items = subMap.get(subject);
+                if (!items.length) continue;
+                if (prioritySubjects.indexOf(subject) !== -1) continue;
+                const icon = getSubjectIcon(subject);
+                app.appendChild(createAccordion(subject, items, icon));
+            }
+        }
+
+        // 4. Дополнительно / Прочее
+        const extraMap = filteredGroups.get(extraSuper);
+        if (extraMap) {
+            for (const [subject, items] of extraMap) {
+                if (items.length) app.appendChild(createAccordion(subject, items, '🎭'));
+            }
+        }
+
+        if (app.children.length === 0) {
+            const emptyDiv = document.createElement('div');
+            emptyDiv.className = 'empty-message';
+            emptyDiv.innerText = showOnlyFavorites ? "⭐ Нет сохранённых ссылок. Добавьте в избранное!" : "🔍 Ничего не найдено. Попробуйте другой запрос.";
+            app.appendChild(emptyDiv);
+        }
+    }
+
+    // Инициализация
+    const searchInput = document.getElementById('searchInput');
+    const favBtn = document.getElementById('favoritesModeBtn');
+    
+    searchInput.addEventListener('input', function(e) {
+        currentSearchQuery = e.target.value;
         renderApp();
-    })();
+    });
+    
+    favBtn.addEventListener('click', function() {
+        showOnlyFavorites = !showOnlyFavorites;
+        if (showOnlyFavorites) favBtn.classList.add('active');
+        else favBtn.classList.remove('active');
+        renderApp();
+    });
+    
+    renderApp();
+})();
 </script>
 </body>
 </html>
